@@ -1,26 +1,25 @@
+import { HeatmapDatum } from "../components/features/home/heatmap/HeatmapChart";
 import {
   BetManager__factory,
   Multicall,
   Multicall__factory,
 } from "../typechain";
 import CONFIGS from "./configs";
-import { ethers, formatEther } from "ethers";
+import { ethers } from "ethers";
+import { addDays } from "date-fns";
 
-const TARGET_BIN_START = 0;
-const TICK_SPACING = 60;
-const TARGET_BIN_COUNT = 40;
-function getTargetBins() {
+export const TARGET_BIN_START = 0;
+export const TICK_SPACING = 60;
+
+function getTargetBins(binCount: number) {
   const targetBins = [];
   let bin = TARGET_BIN_START;
-  for (let i = 0; i < TARGET_BIN_COUNT; i++) {
+  for (let i = 0; i < binCount; i++) {
     targetBins.push(bin);
     bin += TICK_SPACING;
   }
   return targetBins;
 }
-
-const CHUNK_SIZE = 100; // 한 번에 처리할 쿼리 수
-const PARALLEL_CHUNKS = 1; // 병렬 처리할 청크 그룹 수
 
 function chunkArray<T>(array: T[], size: number): T[][] {
   return Array.from({ length: Math.ceil(array.length / size) }, (_, i) =>
@@ -33,7 +32,7 @@ async function executeMulticall(
   queries: string[],
   target: string,
   maxRetries = 3
-): Promise<number[]> {
+): Promise<bigint[][]> {
   let lastError;
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
@@ -44,7 +43,18 @@ async function executeMulticall(
           callData: query,
         }))
       );
-      return results.returnData.map((d) => +formatEther(d));
+      const bmItf = BetManager__factory.createInterface();
+
+      // 각 결과는 이제 배열이므로 적절히 디코딩
+      return results.returnData.map((data) => {
+        // 컨트랙트에서 반환된 배열을 디코딩
+        const decodedData: bigint[] = bmItf.decodeFunctionResult(
+          "getBinQuantitiesInRange",
+          data
+        )[1];
+        // 각 값을 숫자로 변환
+        return Array.from(decodedData) as bigint[];
+      });
     } catch (error) {
       lastError = error;
       if (attempt < maxRetries) {
@@ -63,55 +73,61 @@ async function executeMulticall(
 async function getHeatmapData(
   chainId: number,
   markets: number,
-  chunkSize = CHUNK_SIZE,
-  parallelChunks = PARALLEL_CHUNKS
-) {
-  const contracts = CONFIGS[chainId];
-  const provider = new ethers.JsonRpcProvider(contracts.rpcUrl);
+  firstDate: Date,
+  binCount: number
+): Promise<HeatmapDatum[]> {
+  const chainConfig = CONFIGS[chainId];
+  const provider = new ethers.JsonRpcProvider(chainConfig.rpcUrl);
   const betManager = BetManager__factory.connect(
-    contracts.RangeBetManager,
+    chainConfig.RangeBetManager,
     provider
   );
-  const multicall = Multicall__factory.connect(contracts.multicall, provider);
+  const multicall = Multicall__factory.connect(chainConfig.multicall, provider);
 
   const querys: string[] = [];
-  const bins = getTargetBins();
+  const bins = getTargetBins(binCount);
+
+  // 각 마켓별로 전체 빈 범위를 한 번에 요청
   for (let marketId = 0; marketId < markets; marketId++) {
-    for (let bin of bins) {
-      querys.push(
-        betManager.interface.encodeFunctionData("getBinQuantity", [
-          marketId,
-          bin,
-        ])
-      );
-    }
+    querys.push(
+      betManager.interface.encodeFunctionData("getBinQuantitiesInRange", [
+        marketId,
+        bins[0], // fromBinIndex
+        bins[bins.length - 1], // toBinIndex
+      ])
+    );
   }
 
-  const chunks = chunkArray(querys, chunkSize);
-  const results: number[] = [];
+  const chunks = chunkArray(querys, chainConfig.chunkSize);
+  const results: bigint[][] = [];
 
   // 병렬 처리를 위한 청크 그룹 생성
-  const groups = chunkArray(chunks, parallelChunks);
+  const groups = chunkArray(chunks, chainConfig.parallelChunks);
 
   // 각 그룹 순차 실행
   for (const group of groups) {
     const groupResults = await Promise.all(
       group.map((chunk) =>
-        executeMulticall(multicall, chunk, contracts.RangeBetManager)
+        executeMulticall(multicall, chunk, chainConfig.RangeBetManager)
       )
     );
-    results.push(...groupResults.flat());
-    console.log(`${results.length} / ${querys.length}`);
+
+    // 각 결과는 이제 배열의 배열 형태로 처리
+    for (const result of groupResults.flat()) {
+      results.push(result);
+    }
   }
 
   // 결과를 market별로 재구성
-  const binsPerMarket = bins.length;
-  const marketResults: number[][] = [];
-  
+  const marketResults: HeatmapDatum[] = [];
+
+  let date = firstDate;
   for (let i = 0; i < markets; i++) {
-    const start = i * binsPerMarket;
-    const end = start + binsPerMarket;
-    marketResults.push(results.slice(start, end));
+    marketResults.push({
+      date: date,
+      values: results[i],
+    });
+    date = addDays(date, 1);
   }
 
   return marketResults;

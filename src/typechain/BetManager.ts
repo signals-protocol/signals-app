@@ -31,6 +31,7 @@ export interface BetManagerInterface extends Interface {
       | "claimReward"
       | "collateralToken"
       | "getBinQuantity"
+      | "getBinQuantitiesInRange"
       | "getMarketInfo"
       | "marketCount"
       | "rangeBetToken"
@@ -65,6 +66,10 @@ export interface BetManagerInterface extends Interface {
     values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "getBinQuantitiesInRange",
+    values: [BigNumberish, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getMarketInfo",
     values: [BigNumberish]
   ): string;
@@ -92,6 +97,10 @@ export interface BetManagerInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getBinQuantity",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getBinQuantitiesInRange",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -279,6 +288,16 @@ export interface BetManager extends BaseContract {
     "view"
   >;
 
+  getBinQuantitiesInRange: TypedContractMethod<
+    [
+      marketId: BigNumberish,
+      fromBinIndex: BigNumberish,
+      toBinIndex: BigNumberish
+    ],
+    [[bigint[], bigint[]] & { binIndices: bigint[]; quantities: bigint[] }],
+    "view"
+  >;
+
   getMarketInfo: TypedContractMethod<
     [marketId: BigNumberish],
     [
@@ -351,6 +370,17 @@ export interface BetManager extends BaseContract {
   ): TypedContractMethod<
     [marketId: BigNumberish, binIndex: BigNumberish],
     [bigint],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "getBinQuantitiesInRange"
+  ): TypedContractMethod<
+    [
+      marketId: BigNumberish,
+      fromBinIndex: BigNumberish,
+      toBinIndex: BigNumberish
+    ],
+    [[bigint[], bigint[]] & { binIndices: bigint[]; quantities: bigint[] }],
     "view"
   >;
   getFunction(

@@ -22,7 +22,9 @@ import type {
 } from "./common";
 
 export interface ERC20Interface extends Interface {
-  getFunction(nameOrSignature: "requestTokens" | "approve"): FunctionFragment;
+  getFunction(
+    nameOrSignature: "requestTokens" | "approve" | "allowance" | "balanceOf"
+  ): FunctionFragment;
 
   encodeFunctionData(
     functionFragment: "requestTokens",
@@ -32,12 +34,22 @@ export interface ERC20Interface extends Interface {
     functionFragment: "approve",
     values: [AddressLike, BigNumberish]
   ): string;
+  encodeFunctionData(
+    functionFragment: "allowance",
+    values: [AddressLike, AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "balanceOf",
+    values: [AddressLike]
+  ): string;
 
   decodeFunctionResult(
     functionFragment: "requestTokens",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
 }
 
 export interface ERC20 extends BaseContract {
@@ -95,6 +107,14 @@ export interface ERC20 extends BaseContract {
     "nonpayable"
   >;
 
+  allowance: TypedContractMethod<
+    [owner: AddressLike, spender: AddressLike],
+    [bigint],
+    "view"
+  >;
+
+  balanceOf: TypedContractMethod<[account: AddressLike], [bigint], "view">;
+
   getFunction<T extends ContractMethod = ContractMethod>(
     key: string | FunctionFragment
   ): T;
@@ -109,6 +129,16 @@ export interface ERC20 extends BaseContract {
     [void],
     "nonpayable"
   >;
+  getFunction(
+    nameOrSignature: "allowance"
+  ): TypedContractMethod<
+    [owner: AddressLike, spender: AddressLike],
+    [bigint],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "balanceOf"
+  ): TypedContractMethod<[account: AddressLike], [bigint], "view">;
 
   filters: {};
 }

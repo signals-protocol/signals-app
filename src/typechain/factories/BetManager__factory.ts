@@ -125,6 +125,40 @@ const _abi = [
         name: "marketId",
         type: "uint256",
       },
+      {
+        internalType: "int256",
+        name: "fromBinIndex",
+        type: "int256",
+      },
+      {
+        internalType: "int256",
+        name: "toBinIndex",
+        type: "int256",
+      },
+    ],
+    name: "getBinQuantitiesInRange",
+    outputs: [
+      {
+        internalType: "int256[]",
+        name: "binIndices",
+        type: "int256[]",
+      },
+      {
+        internalType: "uint256[]",
+        name: "quantities",
+        type: "uint256[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "marketId",
+        type: "uint256",
+      },
     ],
     name: "getMarketInfo",
     outputs: [

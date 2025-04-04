@@ -3,6 +3,8 @@ interface Configs {
   USDC: string;
   RangeBetManager: string;
   multicall: string;
+  chunkSize: number;
+  parallelChunks: number;
 }
 
 export const ROOTSTOCK = 31;
@@ -10,9 +12,11 @@ export const ROOTSTOCK = 31;
 const CONFIGS: Record<number, Configs> = {
   [ROOTSTOCK]: {
     rpcUrl: "https://mycrypto.testnet.rsk.co",
-    USDC: "0xA8Af982597D7A17c651c801B801EC86C92171A5d",
-    RangeBetManager: "0x78070bF4525A5A5600Ff97220139a6F77F840A96",
+    USDC: "0xE7CBC29ACbd493B72e2249F4BDbca475cA32e783",
+    RangeBetManager: "0xB82dE83a533CF8196CD8691C8acD4892A72c9d47",
     multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
+    chunkSize: 6,
+    parallelChunks: 1,
   },
 } as const;
 export default CONFIGS;

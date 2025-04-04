@@ -29,6 +29,7 @@ export default {
           950: "#122659",
           DEFAULT: "#1444c2",
         },
+        green: "#34A853"
       },
       fontFamily: {
         sans: ["Pretendard", "system-ui", "sans-serif"],
