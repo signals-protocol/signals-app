@@ -40,7 +40,7 @@ export default function HeatmapChart({
   }, []);
 
   const height = 500;
-  
+
   // x축 scale을 containerWidth 기준으로 수정
   const xScale = d3
     .scaleTime()
@@ -85,9 +85,9 @@ export default function HeatmapChart({
             .tickFormat((d) => d3.timeFormat("%b %-d")(d as Date))
         )
         .call((g) => g.select(".domain").remove())
-        .call(g => g.selectAll(".tick text")
-          .attr("dy", "1em")
-          .style("font-size", "12px"));
+        .call((g) =>
+          g.selectAll(".tick text").attr("dy", "1em").style("font-size", "12px")
+        );
     }
   }, [xScale]);
 
@@ -105,21 +105,23 @@ export default function HeatmapChart({
                   (_, i) => i % Math.ceil(yScale.domain().length / 8) === 0
                 )
             )
-            .tickFormat(d => {
+            .tickFormat((d) => {
               const num = parseFloat(d as string);
-              return new Intl.NumberFormat('en-US', {
+              return new Intl.NumberFormat("en-US", {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,
               }).format(num);
             })
         )
         .call((g) => g.select(".domain").remove())
-        .call(g => g.selectAll(".tick text")
-          .style("font-size", "12px"));
+        .call((g) => g.selectAll(".tick text").style("font-size", "12px"));
     }
   }, [yScale]);
 
-  const rectWidth = (containerWidth - margin.left - margin.right) / data.length;
+  const rectWidth =
+    containerWidth > 0
+      ? (containerWidth - margin.left - margin.right) / data.length
+      : 0;
   const rectHeight = yScale.bandwidth();
 
   const normalizedData = data.map((d) => {

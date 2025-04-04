@@ -18,7 +18,8 @@ const metadata = {
 
 createAppKit({
   adapters: [new EthersAdapter()],
-  networks: [polygonAmoy, flowTestnet, citreaTestnet, rootstockTestnet],
+  // networks: [polygonAmoy, flowTestnet, citreaTestnet, rootstockTestnet],
+  networks: [rootstockTestnet],
   metadata,
   projectId,
   features: {

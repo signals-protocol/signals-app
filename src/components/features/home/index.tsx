@@ -1,7 +1,10 @@
 import { HeatmapDatum } from "./heatmap/HeatmapChart";
 import HeatmapChart from "./heatmap/HeatmapChart";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ToggleChartSwitch from "./ToggleChartSwitch";
+import getHeatmapData from "../../../core/getHeatmapData";
+import CONFIGS, { ROOTSTOCK } from "../../../core/configs";
+import Input from "./input";
 // import sampleData from "./heatmap/mock";
 
 // 가격 bin 생성 함수
@@ -33,15 +36,25 @@ const sampleData: HeatmapDatum[] = Array.from({ length: 15 }, (_, i) => {
   };
 });
 
-
 export default function Home() {
   const [isHeatmap, setIsHeatmap] = useState(true);
+
+  useEffect(() => {
+    // getHeatmapData(ROOTSTOCK, 31).then((data) => {
+    //   console.log(data);
+    // });
+  }, []);
 
   return (
     <div className="flex flex-col gap-2 py-9">
       <ToggleChartSwitch isHeatmap={isHeatmap} setIsHeatmap={setIsHeatmap} />
-      <div className="max-w-4xl">
-      <HeatmapChart data={sampleData} priceBins={createPriceBins()} />
+      <div className="flex gap-12">
+        <div className="flex flex-[2.5]">
+          <HeatmapChart data={sampleData} priceBins={createPriceBins()} />
+        </div>
+        <div className="flex flex-1">
+          <Input />
+        </div>
       </div>
     </div>
   );
@@ -58,7 +71,7 @@ function generateNormalDistributionValues(
   const bins = 40;
 
   const values = Array.from({ length: bins }, (_, i) =>
-    Math.exp(-0.5 * Math.pow((i - mean) / sigma, 2))
+    Math.max(0, Math.exp(-0.5 * Math.pow((i - mean) / sigma, 2)))
   );
 
   const sum = values.reduce((acc, val) => acc + val, 0);
