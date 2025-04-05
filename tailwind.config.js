@@ -7,6 +7,7 @@ export default {
       colors: {
         bitcoin: "#F7931A",
         positive: "#00BF40",
+        negative: "#FF0000",
         surface: {
           DEFAULT: "#FFFFFF",
           container: "#FAFAFA",

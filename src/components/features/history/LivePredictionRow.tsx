@@ -23,8 +23,9 @@ export function LivePredictionRow({ prediction }: LivePredictionRowProps) {
   return (
     <tr>
       <td className="px-6 py-4 whitespace-nowrap">
-        <div className="font-bold text-surface-on underline">
-          {prediction.range}
+        <div className="font-bold text-surface-on">
+          <u className="mr-1">{prediction.range}</u> on{" "}
+          <u className="ml-1">{prediction.date}</u>
         </div>
         <div className="text-sm text-surface-on-var">
           {(+prediction.shares).toFixed(2)} Shares
@@ -74,7 +75,17 @@ export function LivePredictionRow({ prediction }: LivePredictionRowProps) {
             />
           </div>
         </div>
-        {isModalOpen && <ShareModal onClose={closeModal} />}
+        {isModalOpen && (
+          <ShareModal
+            onClose={closeModal}
+            predictionData={{
+              date: prediction.date,
+              predictedDaysAgo: "3 days ago",
+              amount: dollarFormatter(+prediction.value - +prediction.bet),
+              pnlPercentage,
+            }}
+          />
+        )}
       </td>
     </tr>
   );

@@ -10,6 +10,7 @@ import { addDays } from "date-fns";
 import { avgPriceFormatter, dollarFormatter } from "utils/formatter";
 import { BetManager__factory, Multicall__factory } from "typechain";
 import { JsonRpcProvider } from "ethers";
+import { timeFormat } from "d3";
 
 export const parsePredictionLogs = async (
   chainId: number,
@@ -38,7 +39,7 @@ export const parsePredictionLogs = async (
       avg: avgPriceFormatter(avg),
       bet: formatEther(predictionLog.totalCost),
       toWin: formatEther(tickets),
-      date: date.toISOString().split("T")[0],
+      date: timeFormat("%-d %b %Y")(date),
       result: null,
       shares: formatEther(tickets),
       bin: predictionLog.binIndices[0],
@@ -50,38 +51,17 @@ export const parsePredictionLogs = async (
   });
 
   const itf = BetManager__factory.createInterface();
-
-  console.log([
-    predictionLogs[0].marketId,
-    predictionLogs[0].binIndices[0],
-    -predictionLogs[0].amounts[0],
-  ]);
   const querys = predictionLogs.map((log) => ({
     target: config.RangeBetManager,
-    callData: itf.encodeFunctionData("calculateBinCost", [
+    callData: itf.encodeFunctionData("calculateBinSellCost", [
       log.marketId,
       log.binIndices[0],
-      -log.amounts[0],
+      log.amounts[0],
     ]),
   }));
 
   const provider = new JsonRpcProvider(config.rpcUrl);
-  
-  console.log(
-    await BetManager__factory.connect(config.RangeBetManager, provider).calculateBinCost(
-      predictionLogs[0].marketId,
-      predictionLogs[0].binIndices[0],
-      predictionLogs[0].amounts[0]
-    )
-  );
-
-
-
-  const multicall = Multicall__factory.connect(
-    config.multicall,
-    provider
-  );
-
+  const multicall = Multicall__factory.connect(config.multicall, provider);
 
   const results = await multicall.aggregate.staticCall(querys);
 

@@ -49,6 +49,7 @@ export interface BetManagerInterface extends Interface {
       | "sellTokens"
       | "transferOwnership"
       | "withdrawAllCollateral"
+      | "calculateBinSellCost"
   ): FunctionFragment;
 
   getEvent(
@@ -151,6 +152,10 @@ export interface BetManagerInterface extends Interface {
     functionFragment: "withdrawAllCollateral",
     values: [AddressLike]
   ): string;
+  encodeFunctionData(
+    functionFragment: "calculateBinSellCost",
+    values: [BigNumberish, BigNumberish, BigNumberish]
+  ): string;
 
   decodeFunctionResult(
     functionFragment: "activateMarket",
@@ -230,6 +235,10 @@ export interface BetManagerInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "withdrawAllCollateral",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "calculateBinSellCost",
     data: BytesLike
   ): Result;
 }
@@ -610,6 +619,12 @@ export interface BetManager extends BaseContract {
     "nonpayable"
   >;
 
+  calculateBinSellCost: TypedContractMethod<
+    [marketId: BigNumberish, binIndex: BigNumberish, amount: BigNumberish],
+    [bigint],
+    "view"
+  >;
+
   getFunction<T extends ContractMethod = ContractMethod>(
     key: string | FunctionFragment
   ): T;
@@ -799,6 +814,13 @@ export interface BetManager extends BaseContract {
   getFunction(
     nameOrSignature: "withdrawAllCollateral"
   ): TypedContractMethod<[to: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "calculateBinSellCost"
+  ): TypedContractMethod<
+    [marketId: BigNumberish, binIndex: BigNumberish, amount: BigNumberish],
+    [bigint],
+    "view"
+  >;
 
   getEvent(
     key: "CollateralWithdrawn"

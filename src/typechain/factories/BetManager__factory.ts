@@ -319,9 +319,9 @@ const _abi = [
         type: "int256",
       },
       {
-        internalType: "int256",
+        internalType: "uint256",
         name: "amount",
-        type: "int256",
+        type: "uint256",
       },
     ],
     name: "calculateBinCost",
@@ -799,6 +799,35 @@ const _abi = [
     name: "withdrawAllCollateral",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "marketId",
+        type: "uint256",
+      },
+      {
+        internalType: "int256",
+        name: "binIndex",
+        type: "int256",
+      },
+      {
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "calculateBinSellCost",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "sellRevenue",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
 ] as const;

@@ -39,10 +39,10 @@ const CONFIGS: Record<number, Configs> = {
   },
   [CITREA]: {
     rpcUrl: "https://rpc.testnet.citrea.xyz",
-    USDC: "0x03664F2e5eB92Ac39Ec712E9CE90d945d5C061e5",
-    RangeBetManager: "0xD0be1370aAD4EC814ea4794b0272D01B47239789",
+    USDC: "0xb6b624Da7B46dc0027a2eA5E8321750179c7Dc96",
+    RangeBetManager: "0xeA6f722a45D684a09F770ae6B528F4513890b254",
     multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
-    createdBlocknum: 8536959,
+    createdBlocknum: 8539452,
     chunkSize: 20,
     parallelChunks: 3,
     explorer: "https://explorer.testnet.citrea.xyz/",

@@ -27,7 +27,7 @@ const PredictionHistory = () => {
         txHash: item.transactionHash,
       }));
       parsePredictionLogs(GLOBAL_CONFIG.chainId, logs).then((res) => {
-        setItems((prevItems) => [...prevItems, ...res]);
+        setItems((prevItems) => [...res.reverse(), ...prevItems]);
       });
     };
 
