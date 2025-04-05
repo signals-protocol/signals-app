@@ -1,5 +1,5 @@
-import { switchNetwork } from "appkit";
 import predictPrice from "core/predict";
+import { switchNetwork } from "appkit";
 import { approveUSDC } from "core/token";
 import { parseEther } from "ethers";
 import { useNavigate } from "react-router-dom";
@@ -42,8 +42,8 @@ export default function useAction({
   const approve = async () => {
     try {
       setState("approve-loading");
-      const signer = await getSigner();
       await switchNetwork(chainId);
+      const signer = await getSigner();
       await approveUSDC(chainId, signer, parseEther(amount));
       setState("can-predict");
     } catch (error) {
@@ -56,6 +56,8 @@ export default function useAction({
     if (currentBinId === null) return;
     try {
       setState("predict-loading");
+      console.log(chainId);
+      await switchNetwork(chainId);
       const signer = await getSigner();
       await predictPrice(
         chainId,
@@ -68,7 +70,7 @@ export default function useAction({
       setState("done");
       await refreshMap();
     } catch (error) {
-      console.error(error);
+      console.error("Transaction Error??????!?@#!@#!@", error);
       setState("can-predict");
     }
   };
@@ -82,6 +84,8 @@ export default function useAction({
   useEffect(() => {
     if (!address) {
       setState("connect-account");
+    } else if (state === "done") {
+      return;
     } else {
       setState(shouldApprove ? "need-approve" : "can-predict");
     }

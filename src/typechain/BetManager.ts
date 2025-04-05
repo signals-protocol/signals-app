@@ -36,6 +36,7 @@ export interface BetManagerInterface extends Interface {
       | "marketCount"
       | "rangeBetToken"
       | "calculateXForBin"
+      | "getLastClosedMarketId"
   ): FunctionFragment;
 
   getEvent(
@@ -86,6 +87,10 @@ export interface BetManagerInterface extends Interface {
     functionFragment: "calculateXForBin",
     values: [BigNumberish, BigNumberish, BigNumberish]
   ): string;
+  encodeFunctionData(
+    functionFragment: "getLastClosedMarketId",
+    values?: undefined
+  ): string;
 
   decodeFunctionResult(functionFragment: "buyTokens", data: BytesLike): Result;
   decodeFunctionResult(
@@ -122,6 +127,10 @@ export interface BetManagerInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "calculateXForBin",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getLastClosedMarketId",
     data: BytesLike
   ): Result;
 }
@@ -347,6 +356,8 @@ export interface BetManager extends BaseContract {
     "view"
   >;
 
+  getLastClosedMarketId: TypedContractMethod<[], [bigint], "view">;
+
   getFunction<T extends ContractMethod = ContractMethod>(
     key: string | FunctionFragment
   ): T;
@@ -442,6 +453,9 @@ export interface BetManager extends BaseContract {
     [bigint],
     "view"
   >;
+  getFunction(
+    nameOrSignature: "getLastClosedMarketId"
+  ): TypedContractMethod<[], [bigint], "view">;
 
   getEvent(
     key: "MarketClosed"

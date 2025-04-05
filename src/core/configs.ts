@@ -6,6 +6,7 @@ interface Configs {
   chunkSize: number;
   parallelChunks: number;
   createdBlocknum: number;
+  explorer: string;
 }
 
 export const ROOTSTOCK = 31;
@@ -13,15 +14,16 @@ export const CITREA = 5115;
 
 export const GLOBAL_CONFIG = {
   chainId: CITREA,
+  startDate: new Date("2025-03-31"),
   dateCount: 31,
   startPrice: 75000,
   binCount: 40,
   tickSpacing: 60,
   targetBinStart: 0,
-}
+};
 export const CHART_CONFIG = {
-  height: 500
-}
+  height: 500,
+};
 
 const CONFIGS: Record<number, Configs> = {
   [ROOTSTOCK]: {
@@ -32,6 +34,7 @@ const CONFIGS: Record<number, Configs> = {
     createdBlocknum: 6241138,
     chunkSize: 11,
     parallelChunks: 3,
+    explorer: "https://explorer.testnet.rootstock.io/",
   },
   [CITREA]: {
     rpcUrl: "https://rpc.testnet.citrea.xyz",
@@ -41,11 +44,23 @@ const CONFIGS: Record<number, Configs> = {
     createdBlocknum: 8529016,
     chunkSize: 11,
     parallelChunks: 3,
+    explorer: "https://explorer.testnet.citrea.xyz/",
+
   },
 } as const;
 
 export const binIndexToBin = (binIndex: number) => {
   return binIndex * GLOBAL_CONFIG.tickSpacing + GLOBAL_CONFIG.targetBinStart;
-}
+};
+export const binToBinIndex = (bin: number) => {
+  return (bin - GLOBAL_CONFIG.targetBinStart) / GLOBAL_CONFIG.tickSpacing;
+};
+
+export const getBinRange = (binIndex: number | null, priceBins: number[]) =>
+  binIndex !== null ? [priceBins[binIndex], priceBins[binIndex + 1]] : null;
+
+export const createPriceBins = (startPrice: number, length: number) => {
+  return Array.from({ length: length + 1 }, (_, i) => startPrice + i * 500);
+};
 
 export default CONFIGS;

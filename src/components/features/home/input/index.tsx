@@ -4,7 +4,7 @@ import { formatUnits, parseEther } from "ethers";
 import useAction from "./useAction";
 import cn from "utils/cn";
 import { InputAmount } from "./InputAmount";
-import { dollarFormatter } from "utils/formatter";
+import { avgPriceFormatter, dollarFormatter } from "utils/formatter";
 import { ToWin } from "./ToWin";
 
 export default function PredictionInput({
@@ -33,9 +33,7 @@ export default function PredictionInput({
     refreshMap,
   });
 
-  const avgPriceText = `${
-    Math.floor(Number(formatUnits(avgPrice ? avgPrice : "0", 15))) / 10
-  }¢`;
+  const avgPriceText = avgPriceFormatter(avgPrice);
   return (
     <div className="rounded-xl border border-outline-variant p-5">
       <div>

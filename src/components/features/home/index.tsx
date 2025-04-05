@@ -5,12 +5,11 @@ import { GLOBAL_CONFIG } from "../../../core/configs";
 import { usePrediction } from "./input/usePrediction";
 import Histogram from "./histogram";
 import { DatePickerItem } from "./DatePickerItem";
-const START_DATE = new Date("2025-03-31");
 
 export default function Home() {
   const input = usePrediction(
     GLOBAL_CONFIG.chainId,
-    START_DATE,
+    GLOBAL_CONFIG.startDate,
     GLOBAL_CONFIG.startPrice,
     GLOBAL_CONFIG.binCount
   );

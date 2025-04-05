@@ -1,5 +1,4 @@
 interface PredictionBase {
-  id: number;
   range: string;
   avg: string;
   bet: string;
@@ -8,9 +7,9 @@ interface PredictionBase {
   date: string;
   result: "Win" | "Loss" | null;
   shares: string;
+  txHash: string;
 }
 export interface LivePrediction extends PredictionBase {
-  id: number;
   range: string;
   avg: string;
   bet: string;
@@ -21,7 +20,6 @@ export interface LivePrediction extends PredictionBase {
   shares: string;
 }
 export interface EndedPrediction extends PredictionBase {
-  id: number;
   range: string;
   avg: string;
   bet: string;
@@ -46,4 +44,5 @@ export interface PredictionLog {
   binIndices: number[];
   amounts: bigint[];
   totalCost: bigint;
+  txHash: string;
 }

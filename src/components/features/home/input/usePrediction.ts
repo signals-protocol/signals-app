@@ -5,12 +5,8 @@ import { HeatmapDatum } from "../heatmap/HeatmapChart";
 import { parseEther } from "ethers";
 import { useAppKitAccount } from "@reown/appkit/react";
 import { getAllowance, getBalance } from "core/token";
-import { GLOBAL_CONFIG } from "core/configs";
+import { createPriceBins, GLOBAL_CONFIG } from "core/configs";
 import getHeatmapData from "core/getHeatmapData";
-
-const createPriceBins = (startPrice: number, length: number) => {
-  return Array.from({ length: length + 1 }, (_, i) => startPrice + i * 500);
-};
 
 export const usePrediction = (
   chainId: number,

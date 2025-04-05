@@ -2,15 +2,15 @@ import { Link } from "react-router-dom";
 import { useAppKitAccount } from "@reown/appkit/react";
 import { useGetSigner } from "utils/useGetSigner";
 import { switchNetwork } from "appkit";
-import { ROOTSTOCK } from "core/configs";
+import { GLOBAL_CONFIG } from "core/configs";
 import { getUSDC } from "core/token";
 export default function Header() {
   const { address } = useAppKitAccount();
   const getSigner = useGetSigner();
   const reqUSDC = async () => {
+    await switchNetwork(GLOBAL_CONFIG.chainId);
     const signer = await getSigner();
-    await switchNetwork(ROOTSTOCK);
-    await getUSDC(ROOTSTOCK, signer);
+    await getUSDC(GLOBAL_CONFIG.chainId, signer);
   };
 
   return (
