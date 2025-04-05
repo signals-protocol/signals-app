@@ -15,7 +15,6 @@ export default function PredictionInput({
   selectedMarketId,
   currentBinId,
   selectedDate,
-  setSelectedDate,
   currBin,
   tickets,
   amount,
@@ -23,15 +22,8 @@ export default function PredictionInput({
   shouldApprove,
   balance,
   isTicketLoading,
-  isMapLoading,
   refreshMap,
 }: ReturnType<typeof usePrediction>) {
-  const ref = useRef<DatePicker>(null);
-  const formattedDate = formatDate(selectedDate);
-  const handleClick = () => {
-    ref.current?.setOpen(true);
-  };
-
   const avgPrice =
     tickets > 0n ? (parseEther(amount || "0") * parseEther("1")) / tickets : 0n;
   const action = useAction({
@@ -50,6 +42,7 @@ export default function PredictionInput({
   return (
     <div className="rounded-xl border border-outline-variant p-5">
       <div>
+          <p className="text-surface-on-var font-medium">Prediction</p>
         <div className="flex justify-between mb-5">
           {currBin ? (
             <div className="font-bold text-xl">
@@ -66,7 +59,7 @@ export default function PredictionInput({
               </p>
             </div>
           ) : (
-            <p>Select price bin</p>
+            <p className="font-bold text-xl">Select your Prediction</p>
           )}
         </div>
 

@@ -87,7 +87,7 @@ export const usePrediction = (
   const currBin =
     currentBinId !== null
       ? [priceBins[currentBinId], priceBins[currentBinId + 1]]
-      : [];
+      : null;
 
   const onBinClick = (marketId: number, binId: number) => {
     setCurrentBinId(binId);
