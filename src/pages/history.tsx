@@ -1,13 +1,13 @@
 import Header from "../components/layout/Header";
 import Body from "../components/layout/Body";
-import Profile from "components/features/profile";
+import History from "components/features/history";
 
-export default function ProfilePage() {
+export default function HistoryPage() {
   return (
     <div>
       <Header />
       <Body>
-        <Profile />
+        <History />
       </Body>
     </div>
   );

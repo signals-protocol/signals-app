@@ -40,7 +40,7 @@ export default function PredictionInput({
   };
 
   const avgPrice =
-    tickets > 0n ? (parseEther(amount) * parseEther("1")) / tickets : 0n;
+    tickets > 0n ? (parseEther(amount || "0") * parseEther("1")) / tickets : 0n;
   const action = useAction({
     chainId,
     currentBinId,

@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  mode: 'jit',  // JIT 모드 활성화
   theme: {
     extend: {
       colors: {
@@ -9,7 +10,7 @@ export default {
           container: "#FAFAFA",
           "container-high": "#F5F5F5",
           on: "#242424",
-          "on-var": "#777777",
+          "on-var": "#999999",
         },
         outline: {
           DEFAULT: "#ADADAD",

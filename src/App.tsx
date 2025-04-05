@@ -1,13 +1,13 @@
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import HomePage from "pages/home";
-import ProfilePage from "pages/profile";
+import HistoryPage from "pages/history";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/profile" element={<HistoryPage />} />
       </Routes>
     </BrowserRouter>
   );

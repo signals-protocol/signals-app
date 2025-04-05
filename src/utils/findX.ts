@@ -1,9 +1,9 @@
 import { ln } from "./log";
-import { parseEther } from "ethers";
+import { MaxUint256, parseEther } from "ethers";
+import { sqrt } from "./sqrt";
 
 const OPTIONS = {
-  maxIter: 50,
-  tol: 1000n,
+  maxIter: 256,
   initialGuess: 0,
 };
 
@@ -11,22 +11,29 @@ const OPTIONS = {
 export function findX(cost: bigint, q: bigint, total: bigint): bigint {
   if (total === 0n) return cost;
 
-  const initX = (cost * q) / total;
-  let x = initX;
+  let left =
+    (cost + sqrt((q - cost) * (q - cost) + 4n * cost * total) - q) / 2n;
+  let right = q > 0n ? (total * cost) / q : MaxUint256;
+  
+  let x = (left + right) / 2n;
   for (let i = 0; i < OPTIONS.maxIter; i++) {
-    const y = calc(x, q, total);
+    // 만약 right - left = 1n이면 종료
+    if (right - left <= 1n) return right;
+    const y = calculateCost(x, q, total);
     let diff = y - cost;
-    diff = diff < 0n ? -diff : diff;
-    console.log("calc res", i, x, y, q, total, diff);
-    if (diff < OPTIONS.tol) {
-      return x;
+    if (y === cost) return x;
+    if (diff > 0n) {
+      left = x;
+    } else {
+      right = x;
     }
-    x = x + diff;
+    x = (left + right) / 2n;
   }
   return x;
 }
 
-function calc(x: bigint, q: bigint, total: bigint): bigint {
+function calculateCost(x: bigint, q: bigint, total: bigint): bigint {
   const one = parseEther("1");
-  return x + ((q - total) * ln(((total + x) * one) / total)) / one;
+  console.log(x, q, total, x + (q - total) * (ln(total + x) - ln(total)));
+  return x + (q - total) * (ln(total + x) - ln(total));
 }
