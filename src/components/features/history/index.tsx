@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import HistoryHeader from "./HistoryHeader";
 import { Tabs, TabType } from "./Tabs";
 import {
@@ -13,20 +13,11 @@ import { EventLog } from "ethers";
 import { GLOBAL_CONFIG } from "core/configs";
 import { LivePredictionRow } from "./LivePredictionRow";
 import { parsePredictionLogs } from "./parser";
-import { HeatmapDatum } from "../home/heatmap/HeatmapChart";
-import getHeatmapData from "core/getHeatmapData";
+
 const PredictionHistory = () => {
   const { address } = useAppKitAccount();
   const [items, setItems] = useState<LivePrediction[]>([]);
 
-  // useEffect(() => {
-  //   getHeatmapData(
-  //     GLOBAL_CONFIG.chainId,
-  //     GLOBAL_CONFIG.dateCount,
-  //     GLOBAL_CONFIG.startDate,
-  //     GLOBAL_CONFIG.binCount
-  //   ).then(setHeatmapData);
-  // }, []);
   useEffect(() => {
     if (!address) return;
 

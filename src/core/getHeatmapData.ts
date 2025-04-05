@@ -5,7 +5,7 @@ import {
   Multicall__factory,
 } from "../typechain";
 import CONFIGS from "./configs";
-import { ethers } from "ethers";
+import { ethers, MaxUint256 } from "ethers";
 import { addDays } from "date-fns";
 import { GLOBAL_CONFIG } from "./configs";
 
@@ -80,6 +80,8 @@ async function getHeatmapData(
     chainConfig.RangeBetManager,
     provider
   );
+
+  const closedMarketPromise = betManager.getLastClosedMarketId();
   const multicall = Multicall__factory.connect(chainConfig.multicall, provider);
 
   const querys: string[] = [];
@@ -120,10 +122,16 @@ async function getHeatmapData(
   const marketResults: HeatmapDatum[] = [];
 
   let date = firstDate;
+  let closedMarketId = await closedMarketPromise;
+  if (closedMarketId === MaxUint256) {
+    closedMarketId = -1n;
+  }
+
   for (let i = 0; i < markets; i++) {
     marketResults.push({
       date: date,
       values: results[i],
+      closed: i <= Number(closedMarketId),
     });
     date = addDays(date, 1);
   }

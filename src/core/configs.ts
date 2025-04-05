@@ -9,6 +9,7 @@ interface Configs {
   explorer: string;
 }
 
+export const POLYGON = 80002;
 export const ROOTSTOCK = 31;
 export const CITREA = 5115;
 
@@ -38,14 +39,23 @@ const CONFIGS: Record<number, Configs> = {
   },
   [CITREA]: {
     rpcUrl: "https://rpc.testnet.citrea.xyz",
-    USDC: "0x73908E35F9b5747f6183111cA417462E8e39c09B",
-    RangeBetManager: "0x70f4Ca15671FEF847f93a4A554E8758bd1c8240F",
+    USDC: "0x88c75363c746fFb348f15E17Bc2229498F8300AD",
+    RangeBetManager: "0xb59076288C065A55DaE82296f8aD58610FC83778",
     multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
-    createdBlocknum: 8529016,
-    chunkSize: 11,
+    createdBlocknum: 8534330,
+    chunkSize: 20,
     parallelChunks: 3,
     explorer: "https://explorer.testnet.citrea.xyz/",
-
+  },
+  [POLYGON]: {
+    rpcUrl: "https://polygon-amoy.drpc.org",
+    USDC: "0x1Ba59a311Fb42D475dBC55C9bc780e3883E25A53",
+    RangeBetManager: "0x35c3C4FA2F14544dA688e41118edAc953cc48cDa",
+    multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
+    createdBlocknum: 20081162,
+    chunkSize: 20,
+    parallelChunks: 3,
+    explorer: "https://amoy.polygonscan.com/",
   },
 } as const;
 

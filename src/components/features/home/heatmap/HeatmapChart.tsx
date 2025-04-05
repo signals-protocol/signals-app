@@ -3,10 +3,12 @@ import { useEffect, useRef, useState } from "react";
 import { formatEther } from "ethers";
 import { colorScale } from "./colorScale";
 import { CHART_CONFIG } from "core/configs";
+import { dollarFormatter } from "utils/formatter";
 
 export interface HeatmapDatum {
   date: Date | string;
   values: bigint[];
+  closed: boolean;
 }
 
 export type HeatmapChartProps = {
@@ -110,9 +112,11 @@ export default function HeatmapChart({
 
   // 세로 셀 간의 간격만 추가
   const cellPadding = 1; // 세로 셀 간의 간격 (픽셀)
+  const horizontalPadding = 1; // 가로 셀 간의 간격 (픽셀)
   const rectWidth =
     containerWidth > 0
-      ? (containerWidth - margin.left - margin.right) / data.length
+      ? (containerWidth - margin.left - margin.right) / data.length -
+        horizontalPadding
       : 0;
   const rectHeight = yScale.bandwidth() - cellPadding;
 
@@ -130,8 +134,8 @@ export default function HeatmapChart({
   // 각 날짜별 최대 티켓 값을 가진 빈의 인덱스 계산
   const maxTicketIndices = data.map((d) => {
     const maxIndex = d.values.reduce(
-      (maxIdx, value, idx, arr) => 
-        +formatEther(value) > +formatEther(arr[maxIdx]) ? idx : maxIdx, 
+      (maxIdx, value, idx, arr) =>
+        +formatEther(value) > +formatEther(arr[maxIdx]) ? idx : maxIdx,
       0
     );
     return maxIndex;
@@ -166,6 +170,21 @@ export default function HeatmapChart({
         />
         <g ref={yAxisRef} transform={`translate(${margin.left},0)`} />
 
+        {/* 배경 사각형 (셀 간격 색상) */}
+        {data.map((d, i) => {
+          const date = new Date(d.date);
+          return priceBins.map((_, j) => (
+            <rect
+              key={`bg-${i}-${j}`}
+              x={xScale(date)}
+              y={yScale(priceBins[j].toString())!}
+              width={rectWidth + horizontalPadding} // 오른쪽 간격까지 포함
+              height={yScale.bandwidth()}
+              className={d.closed ? "fill-[#00000003]" : "fill-white"}
+            />
+          ));
+        })}
+
         {/* 히트맵 셀 */}
         {data.map((d, i) => {
           const date = new Date(d.date);
@@ -182,7 +201,7 @@ export default function HeatmapChart({
               y={yScale(priceBins[j].toString())! + cellPadding / 2}
               width={rectWidth}
               height={rectHeight}
-              className={colorScale(value)}
+              className={colorScale(value, d.closed)}
               onMouseEnter={() => {
                 setHoveredBin({
                   i,
@@ -220,23 +239,33 @@ export default function HeatmapChart({
       </svg>
       {hoveredBin && (
         <div
+          className="absolute space-y-2 w-44 bg-white text-surface-on px-4 py-3 rounded-lg shadow pointer-events-none z-10"
           style={{
-            position: "absolute",
             left: xScale(hoveredBin.date) + rectWidth / 2,
             top: yScale(hoveredBin.price)! - 10,
-            backgroundColor: "rgba(238, 44, 44, 0.8)",
-            color: "white",
-            padding: "4px 8px",
-            borderRadius: "4px",
-            fontSize: "12px",
-            pointerEvents: "none",
             transform: "translate(-50%, -100%)",
-            zIndex: 10,
           }}
         >
-          <div>날짜: {hoveredBin.date.toLocaleDateString()}</div>
-          <div>가격: {hoveredBin.price}</div>
-          <div>티켓 수: {hoveredBin.tickets}</div>
+          <div className="flex justify-between">
+            <p className="text-[10px] text-surface-on-var">Date</p>
+            <p className="text-xs font-bold text-surface-on">
+              {d3.timeFormat("%-d %b %Y")(hoveredBin.date)}
+            </p>
+          </div>
+          <div className="flex justify-between">
+            <p className="text-[10px] text-surface-on-var">Price</p>
+            <p className="text-xs font-bold ">
+              {dollarFormatter(hoveredBin.price)}
+            </p>
+          </div>
+
+          <hr className="border-outline-var" />
+          <div className="flex justify-between">
+            <p className="text-[10px] text-surface-on-var">Tickets</p>
+            <p className="text-xs font-bold ">
+              {hoveredBin.tickets} ({hoveredBin.perc.toFixed(2)}%)
+            </p>
+          </div>
         </div>
       )}
     </div>
