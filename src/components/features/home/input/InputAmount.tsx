@@ -1,5 +1,5 @@
 import { formatEther } from "ethers";
-
+import { dollarFormatter } from "utils/formatter";
 interface InputAmountProps {
   amount: string;
   setAmount: (amount: string) => void;
@@ -39,14 +39,20 @@ export const InputAmount = ({
           <span className="text-surface-on-var font-medium">Amount</span>
           <p className="text-surface-on-var text-xs mt-1">Your confidence 🙌</p>
         </div>
-        <div className="inline-flex items-center text-xl font-bold ">
-          <input
-            value={amount}
-            onChange={onChangeValue}
-            className="outline-none text-right"
-            placeholder="$0"
-          />
-          <p className="ml-1">USDC</p>
+        <div>
+          <div className="inline-flex items-center text-xl font-bold ">
+            <input
+              value={amount}
+              onChange={onChangeValue}
+              className="outline-none text-right"
+              placeholder="$0"
+            />
+            <p className="ml-1">USDC</p>
+          </div>
+
+          <p className="text-surface-on-var text-xs text-right">
+            Balance: {formatEther(balance)}
+          </p>
         </div>
       </div>
 
