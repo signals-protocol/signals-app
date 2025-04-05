@@ -4,11 +4,12 @@ import { formatEther } from "ethers";
 import { colorScale } from "./colorScale";
 import { CHART_CONFIG } from "core/configs";
 import { dollarFormatter } from "utils/formatter";
+import cn from "utils/cn";
 
 export interface HeatmapDatum {
   date: Date | string;
   values: bigint[];
-  closed: boolean;
+  state: "closed" | "today" | "open";
 }
 
 export type HeatmapChartProps = {
@@ -142,14 +143,24 @@ export default function HeatmapChart({
   });
 
   // 라인 차트를 위한 데이터 포인트 생성
-  const lineData = data.map((d, i) => ({
-    date: new Date(d.date),
-    price: parseFloat(priceBins[maxTicketIndices[i]].toString()),
-    value: +formatEther(d.values[maxTicketIndices[i]]),
-  }));
+  const lineData = data
+    .map((d, i) => ({
+      date: new Date(d.date),
+      price: parseFloat(priceBins[maxTicketIndices[i]].toString()),
+      value: +formatEther(d.values[maxTicketIndices[i]]),
+      state: d.state,
+    }))
+    .filter((d) => d.state === "closed" || d.state === "today");
 
   // 라인 생성기
   const line = d3
+    .line<{ date: Date; price: number }>()
+    .x((d) => xScale(d.date) + rectWidth / 2)
+    .y((d) => yScale(d.price.toString())! + rectHeight / 2)
+    .curve(d3.curveMonotoneX);
+
+  // 점선 라인 생성기 추가
+  const dashedLine = d3
     .line<{ date: Date; price: number }>()
     .x((d) => xScale(d.date) + rectWidth / 2)
     .y((d) => yScale(d.price.toString())! + rectHeight / 2)
@@ -180,7 +191,9 @@ export default function HeatmapChart({
               y={yScale(priceBins[j].toString())!}
               width={rectWidth + horizontalPadding} // 오른쪽 간격까지 포함
               height={yScale.bandwidth()}
-              className={d.closed ? "fill-[#00000003]" : "fill-white"}
+              className={cn(
+                d.state === "closed" ? "fill-[#00000004] stroke-[#00000004]" : "fill-white"
+              )}
             />
           ));
         })}
@@ -201,7 +214,11 @@ export default function HeatmapChart({
               y={yScale(priceBins[j].toString())! + cellPadding / 2}
               width={rectWidth}
               height={rectHeight}
-              className={colorScale(value, d.closed)}
+              className={`${colorScale(value, d.state === "closed")} ${
+                j === hoveredBin?.j &&
+                i === hoveredBin?.i &&
+                "stroke-bitcoin stroke-2"
+              }`}
               onMouseEnter={() => {
                 setHoveredBin({
                   i,
@@ -216,15 +233,37 @@ export default function HeatmapChart({
           ));
         })}
 
-        {/* 최대 티켓 값 라인 차트 */}
+        {/* 최대 티켓 값 라인 차트 - 실선 부분 */}
         <path
-          d={line(lineData) || ""}
+          d={line(lineData.filter((d) => d.state === "closed")) || ""}
           fill="none"
           stroke="#F7931A"
           strokeWidth={2}
           strokeLinecap="round"
           strokeLinejoin="round"
         />
+
+        {/* 최대 티켓 값 라인 차트 - 점선 부분 (today 상태) */}
+        {lineData.some((d) => d.state === "today") && (
+          <path
+            d={
+              dashedLine(
+                lineData.filter(
+                  (d) =>
+                    d.state === "today" ||
+                    (d.state === "closed" &&
+                      lineData.some((item) => item.state === "today"))
+                )
+              ) || ""
+            }
+            fill="none"
+            stroke="#F7931A"
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeDasharray="3,3"
+          />
+        )}
 
         {/* 라인 차트 데이터 포인트 */}
         {lineData.map((d, i) => (
@@ -234,9 +273,11 @@ export default function HeatmapChart({
             cy={yScale(d.price.toString())! + rectHeight / 2}
             r={3}
             className="fill-bitcoin"
+            style={{ display: d.state === "open" ? "none" : "block" }}
           />
         ))}
       </svg>
+
       {hoveredBin && (
         <div
           className="absolute space-y-2 w-44 bg-white text-surface-on px-4 py-3 rounded-lg shadow pointer-events-none z-10"

@@ -26,27 +26,46 @@ import type {
 export interface BetManagerInterface extends Interface {
   getFunction(
     nameOrSignature:
+      | "activateMarket"
       | "buyTokens"
       | "calculateBinCost"
-      | "claimReward"
-      | "collateralToken"
-      | "getBinQuantity"
-      | "getBinQuantitiesInRange"
-      | "getMarketInfo"
-      | "marketCount"
-      | "rangeBetToken"
       | "calculateXForBin"
+      | "claimReward"
+      | "closeMarket"
+      | "collateralToken"
+      | "createBatchMarkets"
+      | "createMarket"
+      | "deactivateMarket"
+      | "getBinQuantitiesInRange"
+      | "getBinQuantity"
       | "getLastClosedMarketId"
+      | "getMarketInfo"
+      | "lastClosedMarketId"
+      | "marketCount"
+      | "markets"
+      | "owner"
+      | "rangeBetToken"
+      | "renounceOwnership"
+      | "sellTokens"
+      | "transferOwnership"
+      | "withdrawAllCollateral"
   ): FunctionFragment;
 
   getEvent(
     nameOrSignatureOrTopic:
+      | "CollateralWithdrawn"
       | "MarketClosed"
       | "MarketCreated"
+      | "OwnershipTransferred"
       | "RewardClaimed"
       | "TokensBought"
+      | "TokensSold"
   ): EventFragment;
 
+  encodeFunctionData(
+    functionFragment: "activateMarket",
+    values: [BigNumberish]
+  ): string;
   encodeFunctionData(
     functionFragment: "buyTokens",
     values: [BigNumberish, BigNumberish[], BigNumberish[], BigNumberish]
@@ -56,45 +75,94 @@ export interface BetManagerInterface extends Interface {
     values: [BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "calculateXForBin",
+    values: [BigNumberish, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "claimReward",
     values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "closeMarket",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "collateralToken",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "getBinQuantity",
-    values: [BigNumberish, BigNumberish]
+    functionFragment: "createBatchMarkets",
+    values: [BigNumberish[], BigNumberish[], BigNumberish[], BigNumberish[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "createMarket",
+    values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "deactivateMarket",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "getBinQuantitiesInRange",
     values: [BigNumberish, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getBinQuantity",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getLastClosedMarketId",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "getMarketInfo",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "lastClosedMarketId",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "marketCount",
     values?: undefined
   ): string;
+  encodeFunctionData(
+    functionFragment: "markets",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "rangeBetToken",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "calculateXForBin",
-    values: [BigNumberish, BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getLastClosedMarketId",
+    functionFragment: "renounceOwnership",
     values?: undefined
   ): string;
+  encodeFunctionData(
+    functionFragment: "sellTokens",
+    values: [BigNumberish, BigNumberish[], BigNumberish[], BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "transferOwnership",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "withdrawAllCollateral",
+    values: [AddressLike]
+  ): string;
 
+  decodeFunctionResult(
+    functionFragment: "activateMarket",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "buyTokens", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "calculateBinCost",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "calculateXForBin",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -102,11 +170,23 @@ export interface BetManagerInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "closeMarket",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "collateralToken",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getBinQuantity",
+    functionFragment: "createBatchMarkets",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "createMarket",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "deactivateMarket",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -114,25 +194,57 @@ export interface BetManagerInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getMarketInfo",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "marketCount",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "rangeBetToken",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "calculateXForBin",
+    functionFragment: "getBinQuantity",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "getLastClosedMarketId",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "getMarketInfo",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "lastClosedMarketId",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "marketCount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "markets", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "rangeBetToken",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "renounceOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "sellTokens", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "transferOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawAllCollateral",
+    data: BytesLike
+  ): Result;
+}
+
+export namespace CollateralWithdrawnEvent {
+  export type InputTuple = [to: AddressLike, amount: BigNumberish];
+  export type OutputTuple = [to: string, amount: bigint];
+  export interface OutputObject {
+    to: string;
+    amount: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
 
 export namespace MarketClosedEvent {
@@ -172,6 +284,19 @@ export namespace MarketCreatedEvent {
     maxTick: bigint;
     openTimestamp: bigint;
     closeTimestamp: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace OwnershipTransferredEvent {
+  export type InputTuple = [previousOwner: AddressLike, newOwner: AddressLike];
+  export type OutputTuple = [previousOwner: string, newOwner: string];
+  export interface OutputObject {
+    previousOwner: string;
+    newOwner: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -232,6 +357,34 @@ export namespace TokensBoughtEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
+export namespace TokensSoldEvent {
+  export type InputTuple = [
+    marketId: BigNumberish,
+    seller: AddressLike,
+    binIndices: BigNumberish[],
+    amounts: BigNumberish[],
+    totalProceeds: BigNumberish
+  ];
+  export type OutputTuple = [
+    marketId: bigint,
+    seller: string,
+    binIndices: bigint[],
+    amounts: bigint[],
+    totalProceeds: bigint
+  ];
+  export interface OutputObject {
+    marketId: bigint;
+    seller: string;
+    binIndices: bigint[];
+    amounts: bigint[];
+    totalProceeds: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export interface BetManager extends BaseContract {
   connect(runner?: ContractRunner | null): BetManager;
   waitForDeployment(): Promise<this>;
@@ -275,6 +428,12 @@ export interface BetManager extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
+  activateMarket: TypedContractMethod<
+    [marketId: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
   buyTokens: TypedContractMethod<
     [
       marketId: BigNumberish,
@@ -292,18 +451,52 @@ export interface BetManager extends BaseContract {
     "view"
   >;
 
+  calculateXForBin: TypedContractMethod<
+    [marketId: BigNumberish, binIndex: BigNumberish, cost: BigNumberish],
+    [bigint],
+    "view"
+  >;
+
   claimReward: TypedContractMethod<
     [marketId: BigNumberish, binIndex: BigNumberish],
     [void],
     "nonpayable"
   >;
 
+  closeMarket: TypedContractMethod<
+    [winningBin: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
   collateralToken: TypedContractMethod<[], [string], "view">;
 
-  getBinQuantity: TypedContractMethod<
-    [marketId: BigNumberish, binIndex: BigNumberish],
+  createBatchMarkets: TypedContractMethod<
+    [
+      tickSpacings: BigNumberish[],
+      minTicks: BigNumberish[],
+      maxTicks: BigNumberish[],
+      closeTimes: BigNumberish[]
+    ],
+    [bigint[]],
+    "nonpayable"
+  >;
+
+  createMarket: TypedContractMethod<
+    [
+      tickSpacing: BigNumberish,
+      minTick: BigNumberish,
+      maxTick: BigNumberish,
+      _closeTime: BigNumberish
+    ],
     [bigint],
-    "view"
+    "nonpayable"
+  >;
+
+  deactivateMarket: TypedContractMethod<
+    [marketId: BigNumberish],
+    [void],
+    "nonpayable"
   >;
 
   getBinQuantitiesInRange: TypedContractMethod<
@@ -315,6 +508,14 @@ export interface BetManager extends BaseContract {
     [[bigint[], bigint[]] & { binIndices: bigint[]; quantities: bigint[] }],
     "view"
   >;
+
+  getBinQuantity: TypedContractMethod<
+    [marketId: BigNumberish, binIndex: BigNumberish],
+    [bigint],
+    "view"
+  >;
+
+  getLastClosedMarketId: TypedContractMethod<[], [bigint], "view">;
 
   getMarketInfo: TypedContractMethod<
     [marketId: BigNumberish],
@@ -346,22 +547,76 @@ export interface BetManager extends BaseContract {
     "view"
   >;
 
+  lastClosedMarketId: TypedContractMethod<[], [bigint], "view">;
+
   marketCount: TypedContractMethod<[], [bigint], "view">;
 
-  rangeBetToken: TypedContractMethod<[], [string], "view">;
-
-  calculateXForBin: TypedContractMethod<
-    [marketId: BigNumberish, binIndex: BigNumberish, cost: BigNumberish],
-    [bigint],
+  markets: TypedContractMethod<
+    [arg0: BigNumberish],
+    [
+      [
+        boolean,
+        boolean,
+        bigint,
+        bigint,
+        bigint,
+        bigint,
+        bigint,
+        bigint,
+        bigint,
+        bigint
+      ] & {
+        active: boolean;
+        closed: boolean;
+        tickSpacing: bigint;
+        minTick: bigint;
+        maxTick: bigint;
+        T: bigint;
+        collateralBalance: bigint;
+        winningBin: bigint;
+        openTimestamp: bigint;
+        closeTimestamp: bigint;
+      }
+    ],
     "view"
   >;
 
-  getLastClosedMarketId: TypedContractMethod<[], [bigint], "view">;
+  owner: TypedContractMethod<[], [string], "view">;
+
+  rangeBetToken: TypedContractMethod<[], [string], "view">;
+
+  renounceOwnership: TypedContractMethod<[], [void], "nonpayable">;
+
+  sellTokens: TypedContractMethod<
+    [
+      marketId: BigNumberish,
+      binIndices: BigNumberish[],
+      amounts: BigNumberish[],
+      minCollateral: BigNumberish
+    ],
+    [void],
+    "nonpayable"
+  >;
+
+  transferOwnership: TypedContractMethod<
+    [newOwner: AddressLike],
+    [void],
+    "nonpayable"
+  >;
+
+  withdrawAllCollateral: TypedContractMethod<
+    [to: AddressLike],
+    [void],
+    "nonpayable"
+  >;
 
   getFunction<T extends ContractMethod = ContractMethod>(
     key: string | FunctionFragment
   ): T;
 
+  getFunction(
+    nameOrSignature: "activateMarket"
+  ): TypedContractMethod<[marketId: BigNumberish], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "buyTokens"
   ): TypedContractMethod<
@@ -382,6 +637,13 @@ export interface BetManager extends BaseContract {
     "view"
   >;
   getFunction(
+    nameOrSignature: "calculateXForBin"
+  ): TypedContractMethod<
+    [marketId: BigNumberish, binIndex: BigNumberish, cost: BigNumberish],
+    [bigint],
+    "view"
+  >;
+  getFunction(
     nameOrSignature: "claimReward"
   ): TypedContractMethod<
     [marketId: BigNumberish, binIndex: BigNumberish],
@@ -389,15 +651,38 @@ export interface BetManager extends BaseContract {
     "nonpayable"
   >;
   getFunction(
+    nameOrSignature: "closeMarket"
+  ): TypedContractMethod<[winningBin: BigNumberish], [void], "nonpayable">;
+  getFunction(
     nameOrSignature: "collateralToken"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
-    nameOrSignature: "getBinQuantity"
+    nameOrSignature: "createBatchMarkets"
   ): TypedContractMethod<
-    [marketId: BigNumberish, binIndex: BigNumberish],
-    [bigint],
-    "view"
+    [
+      tickSpacings: BigNumberish[],
+      minTicks: BigNumberish[],
+      maxTicks: BigNumberish[],
+      closeTimes: BigNumberish[]
+    ],
+    [bigint[]],
+    "nonpayable"
   >;
+  getFunction(
+    nameOrSignature: "createMarket"
+  ): TypedContractMethod<
+    [
+      tickSpacing: BigNumberish,
+      minTick: BigNumberish,
+      maxTick: BigNumberish,
+      _closeTime: BigNumberish
+    ],
+    [bigint],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "deactivateMarket"
+  ): TypedContractMethod<[marketId: BigNumberish], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "getBinQuantitiesInRange"
   ): TypedContractMethod<
@@ -409,6 +694,16 @@ export interface BetManager extends BaseContract {
     [[bigint[], bigint[]] & { binIndices: bigint[]; quantities: bigint[] }],
     "view"
   >;
+  getFunction(
+    nameOrSignature: "getBinQuantity"
+  ): TypedContractMethod<
+    [marketId: BigNumberish, binIndex: BigNumberish],
+    [bigint],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "getLastClosedMarketId"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "getMarketInfo"
   ): TypedContractMethod<
@@ -441,22 +736,77 @@ export interface BetManager extends BaseContract {
     "view"
   >;
   getFunction(
+    nameOrSignature: "lastClosedMarketId"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
     nameOrSignature: "marketCount"
   ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "markets"
+  ): TypedContractMethod<
+    [arg0: BigNumberish],
+    [
+      [
+        boolean,
+        boolean,
+        bigint,
+        bigint,
+        bigint,
+        bigint,
+        bigint,
+        bigint,
+        bigint,
+        bigint
+      ] & {
+        active: boolean;
+        closed: boolean;
+        tickSpacing: bigint;
+        minTick: bigint;
+        maxTick: bigint;
+        T: bigint;
+        collateralBalance: bigint;
+        winningBin: bigint;
+        openTimestamp: bigint;
+        closeTimestamp: bigint;
+      }
+    ],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "owner"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "rangeBetToken"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
-    nameOrSignature: "calculateXForBin"
+    nameOrSignature: "renounceOwnership"
+  ): TypedContractMethod<[], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "sellTokens"
   ): TypedContractMethod<
-    [marketId: BigNumberish, binIndex: BigNumberish, cost: BigNumberish],
-    [bigint],
-    "view"
+    [
+      marketId: BigNumberish,
+      binIndices: BigNumberish[],
+      amounts: BigNumberish[],
+      minCollateral: BigNumberish
+    ],
+    [void],
+    "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "getLastClosedMarketId"
-  ): TypedContractMethod<[], [bigint], "view">;
+    nameOrSignature: "transferOwnership"
+  ): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "withdrawAllCollateral"
+  ): TypedContractMethod<[to: AddressLike], [void], "nonpayable">;
 
+  getEvent(
+    key: "CollateralWithdrawn"
+  ): TypedContractEvent<
+    CollateralWithdrawnEvent.InputTuple,
+    CollateralWithdrawnEvent.OutputTuple,
+    CollateralWithdrawnEvent.OutputObject
+  >;
   getEvent(
     key: "MarketClosed"
   ): TypedContractEvent<
@@ -472,6 +822,13 @@ export interface BetManager extends BaseContract {
     MarketCreatedEvent.OutputObject
   >;
   getEvent(
+    key: "OwnershipTransferred"
+  ): TypedContractEvent<
+    OwnershipTransferredEvent.InputTuple,
+    OwnershipTransferredEvent.OutputTuple,
+    OwnershipTransferredEvent.OutputObject
+  >;
+  getEvent(
     key: "RewardClaimed"
   ): TypedContractEvent<
     RewardClaimedEvent.InputTuple,
@@ -485,8 +842,26 @@ export interface BetManager extends BaseContract {
     TokensBoughtEvent.OutputTuple,
     TokensBoughtEvent.OutputObject
   >;
+  getEvent(
+    key: "TokensSold"
+  ): TypedContractEvent<
+    TokensSoldEvent.InputTuple,
+    TokensSoldEvent.OutputTuple,
+    TokensSoldEvent.OutputObject
+  >;
 
   filters: {
+    "CollateralWithdrawn(address,uint256)": TypedContractEvent<
+      CollateralWithdrawnEvent.InputTuple,
+      CollateralWithdrawnEvent.OutputTuple,
+      CollateralWithdrawnEvent.OutputObject
+    >;
+    CollateralWithdrawn: TypedContractEvent<
+      CollateralWithdrawnEvent.InputTuple,
+      CollateralWithdrawnEvent.OutputTuple,
+      CollateralWithdrawnEvent.OutputObject
+    >;
+
     "MarketClosed(uint256,int256)": TypedContractEvent<
       MarketClosedEvent.InputTuple,
       MarketClosedEvent.OutputTuple,
@@ -509,6 +884,17 @@ export interface BetManager extends BaseContract {
       MarketCreatedEvent.OutputObject
     >;
 
+    "OwnershipTransferred(address,address)": TypedContractEvent<
+      OwnershipTransferredEvent.InputTuple,
+      OwnershipTransferredEvent.OutputTuple,
+      OwnershipTransferredEvent.OutputObject
+    >;
+    OwnershipTransferred: TypedContractEvent<
+      OwnershipTransferredEvent.InputTuple,
+      OwnershipTransferredEvent.OutputTuple,
+      OwnershipTransferredEvent.OutputObject
+    >;
+
     "RewardClaimed(uint256,address,int256,uint256)": TypedContractEvent<
       RewardClaimedEvent.InputTuple,
       RewardClaimedEvent.OutputTuple,
@@ -529,6 +915,17 @@ export interface BetManager extends BaseContract {
       TokensBoughtEvent.InputTuple,
       TokensBoughtEvent.OutputTuple,
       TokensBoughtEvent.OutputObject
+    >;
+
+    "TokensSold(uint256,address,int256[],uint256[],uint256)": TypedContractEvent<
+      TokensSoldEvent.InputTuple,
+      TokensSoldEvent.OutputTuple,
+      TokensSoldEvent.OutputObject
+    >;
+    TokensSold: TypedContractEvent<
+      TokensSoldEvent.InputTuple,
+      TokensSoldEvent.OutputTuple,
+      TokensSoldEvent.OutputObject
     >;
   };
 }

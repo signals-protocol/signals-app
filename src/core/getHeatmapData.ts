@@ -131,7 +131,12 @@ async function getHeatmapData(
     marketResults.push({
       date: date,
       values: results[i],
-      closed: i <= Number(closedMarketId),
+      state:
+        i <= Number(closedMarketId)
+          ? "closed"
+          : i === Number(closedMarketId) + 1
+          ? "today"
+          : "open",
     });
     date = addDays(date, 1);
   }

@@ -1,5 +1,5 @@
 export function colorScale(value: number, closed: boolean) {
-  if (value < 0.05) return closed ? "fill-[#00000003]" : "fill-white";
+  if (value < 0.05) return closed ? "fill-[#00000004]" : "fill-white";
   if (value < 0.1) return "fill-primary-50";
   if (value < 0.2) return "fill-primary-100";
   if (value < 0.3) return "fill-primary-200";

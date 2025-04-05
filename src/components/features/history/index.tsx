@@ -1,18 +1,14 @@
 import { useEffect, useState } from "react";
 import HistoryHeader from "./HistoryHeader";
 import { Tabs, TabType } from "./Tabs";
-import {
-  LivePrediction,
-  EndedPrediction,
-  PredictionSummary,
-  PredictionLog,
-} from "./interfaces";
+import { LivePrediction } from "./interfaces";
 import { getPredictionHistory } from "core/getPredictionHistory";
 import { useAppKitAccount } from "@reown/appkit/react";
 import { EventLog } from "ethers";
 import { GLOBAL_CONFIG } from "core/configs";
 import { LivePredictionRow } from "./LivePredictionRow";
 import { parsePredictionLogs } from "./parser";
+import { dollarFormatter } from "utils/formatter";
 
 const PredictionHistory = () => {
   const { address } = useAppKitAccount();
@@ -41,21 +37,12 @@ const PredictionHistory = () => {
 
   const [activeTab, setActiveTab] = useState<TabType>("Live");
 
-  // 요약 정보
-  const liveSummary: PredictionSummary = {
-    positionValue: "$0.04",
-    profitAndLoss: "-$9.95",
-    volumeTraded: "$9.99",
-    predictionCount: "1",
-  };
-
-  const endedSummary: PredictionSummary = {
-    positionValue: "$20.04",
-    profitAndLoss: "+$0.05",
-    volumeTraded: "$19.99",
-    predictionCount: "2 (1-1)",
-  };
-  const currentSummary = activeTab === "Live" ? liveSummary : endedSummary;
+  const totalPosition = items.reduce(
+    (acc, item) => acc + Number(item.value),
+    0
+  );
+  const totalBet = items.reduce((acc, item) => acc + Number(item.bet), 0);
+  const totalPnl = totalPosition - totalBet;
 
   return (
     <div className="">
@@ -69,32 +56,28 @@ const PredictionHistory = () => {
         <div className="border p-4 rounded-lg">
           <p className="text-sm text-surface-on-var">Position value</p>
           <p className="text-lg font-semibold">
-            {currentSummary.positionValue}
+            {dollarFormatter(totalPosition)}
           </p>
         </div>
         <div className="border p-4 rounded-lg">
           <p className="text-sm text-surface-on-var">Profit and Loss</p>
           <p
             className={`text-lg font-semibold ${
-              currentSummary.profitAndLoss.startsWith("+")
-                ? "text-green-500"
-                : "text-red-500"
+              totalPnl > 0 ? "text-green" : "text-red-500"
             }`}
           >
-            {currentSummary.profitAndLoss}
+            {dollarFormatter(totalPnl)}
           </p>
         </div>
         <div className="border p-4 rounded-lg">
           <p className="text-sm text-surface-on-var">Volume traded</p>
-          <p className="text-lg font-semibold">{currentSummary.volumeTraded}</p>
+          <p className="text-lg font-semibold">{dollarFormatter(totalBet)}</p>
         </div>
         <div className="border p-4 rounded-lg">
           <p className="text-sm text-surface-on-var">
             # of Prediction{activeTab === "Ended" ? " (Win-Loss)" : ""}
           </p>
-          <p className="text-lg font-semibold">
-            {currentSummary.predictionCount}
-          </p>
+          <p className="text-lg font-semibold">{items.length}</p>
         </div>
       </div>
 
@@ -124,9 +107,7 @@ const PredictionHistory = () => {
                   TO WIN
                 </th>
               )}
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                DATE
-              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"></th>
             </tr>
           </thead>
 

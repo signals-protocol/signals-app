@@ -36,46 +36,62 @@ export const parsePredictionLogs = async (
         2
       )}`,
       avg: avgPriceFormatter(avg),
-      bet: dollarFormatter(formatEther(predictionLog.totalCost)),
-      toWin: dollarFormatter(formatEther(tickets)),
+      bet: formatEther(predictionLog.totalCost),
+      toWin: formatEther(tickets),
       date: date.toISOString().split("T")[0],
       result: null,
       shares: formatEther(tickets),
       bin: predictionLog.binIndices[0],
       marketId: predictionLog.marketId,
       totalCost: predictionLog.totalCost,
-      txHash: predictionLog.txHash, 
-      value: "0"
+      txHash: predictionLog.txHash,
+      value: "0",
     };
   });
 
-  return preParsed;
-
   const itf = BetManager__factory.createInterface();
+
+  console.log([
+    predictionLogs[0].marketId,
+    predictionLogs[0].binIndices[0],
+    -predictionLogs[0].amounts[0],
+  ]);
   const querys = predictionLogs.map((log) => ({
     target: config.RangeBetManager,
     callData: itf.encodeFunctionData("calculateBinCost", [
       log.marketId,
       log.binIndices[0],
-      log.amounts[0],
+      -log.amounts[0],
     ]),
-  })
+  }));
+
+  const provider = new JsonRpcProvider(config.rpcUrl);
+  
+  console.log(
+    await BetManager__factory.connect(config.RangeBetManager, provider).calculateBinCost(
+      predictionLogs[0].marketId,
+      predictionLogs[0].binIndices[0],
+      predictionLogs[0].amounts[0]
+    )
   );
+
+
 
   const multicall = Multicall__factory.connect(
     config.multicall,
-    new JsonRpcProvider(config.rpcUrl)
-  )
+    provider
+  );
+
 
   const results = await multicall.aggregate.staticCall(querys);
 
-  const currValue = results.returnData.map((data, index) => {
-    const value = dollarFormatter(formatEther(data));
+  const withCurrValue = results.returnData.map((data, index) => {
+    const value = formatEther(data);
     return {
       ...preParsed[index],
-      value
+      value,
     };
   });
 
-  return currValue;
+  return withCurrValue;
 };

@@ -23,7 +23,7 @@ export const GLOBAL_CONFIG = {
   targetBinStart: 0,
 };
 export const CHART_CONFIG = {
-  height: 500,
+  height: 600,
 };
 
 const CONFIGS: Record<number, Configs> = {
@@ -39,10 +39,10 @@ const CONFIGS: Record<number, Configs> = {
   },
   [CITREA]: {
     rpcUrl: "https://rpc.testnet.citrea.xyz",
-    USDC: "0x88c75363c746fFb348f15E17Bc2229498F8300AD",
-    RangeBetManager: "0xb59076288C065A55DaE82296f8aD58610FC83778",
+    USDC: "0x03664F2e5eB92Ac39Ec712E9CE90d945d5C061e5",
+    RangeBetManager: "0xD0be1370aAD4EC814ea4794b0272D01B47239789",
     multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
-    createdBlocknum: 8534330,
+    createdBlocknum: 8536959,
     chunkSize: 20,
     parallelChunks: 3,
     explorer: "https://explorer.testnet.citrea.xyz/",
