@@ -25,9 +25,15 @@ const PredictionHistory = () => {
         amounts: item.args.amounts,
         totalCost: item.args.totalCost,
         txHash: item.transactionHash,
+        blockNumber: item.blockNumber,
       }));
       parsePredictionLogs(GLOBAL_CONFIG.chainId, logs).then((res) => {
-        setItems((prevItems) => [...res.reverse(), ...prevItems]);
+        setItems((prev) => {
+          const newItems = [...res, ...prev].sort(
+            (a, b) => b.blockNumber - a.blockNumber
+          );
+          return [...newItems];
+        });
       });
     };
 

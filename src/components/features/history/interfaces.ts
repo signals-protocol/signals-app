@@ -18,6 +18,7 @@ export interface LivePrediction extends PredictionBase {
   date: string;
   result: null;
   shares: string;
+  blockNumber: number;
 }
 export interface EndedPrediction extends PredictionBase {
   range: string;
@@ -45,4 +46,5 @@ export interface PredictionLog {
   amounts: bigint[];
   totalCost: bigint;
   txHash: string;
+  blockNumber: number;
 }

@@ -46,6 +46,7 @@ export const parsePredictionLogs = async (
       marketId: predictionLog.marketId,
       totalCost: predictionLog.totalCost,
       txHash: predictionLog.txHash,
+      blockNumber: predictionLog.blockNumber,
       value: "0",
     };
   });

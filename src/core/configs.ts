@@ -9,7 +9,7 @@ interface Configs {
   explorer: string;
 }
 
-export const POLYGON = 80002;
+export const POLYGON_MAINNET = 137;
 export const ROOTSTOCK = 31;
 export const CITREA = 5115;
 
@@ -29,10 +29,10 @@ export const CHART_CONFIG = {
 const CONFIGS: Record<number, Configs> = {
   [ROOTSTOCK]: {
     rpcUrl: "https://rpc.testnet.rootstock.io/ftZ3SGjLVuC4p9Bl70AF0EdUBSz3Ca-T",
-    USDC: "0xD0be1370aAD4EC814ea4794b0272D01B47239789",
-    RangeBetManager: "0x9fDEb59d52b49F95D244Be8f64e307D500b11A3a",
+    USDC: "0x4f19f78Ab075f033004A5f42bCFdE294CbeE2AEF",
+    RangeBetManager: "0x35c3C4FA2F14544dA688e41118edAc953cc48cDa",
     multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
-    createdBlocknum: 6241138,
+    createdBlocknum: 69936222,
     chunkSize: 11,
     parallelChunks: 3,
     explorer: "https://explorer.testnet.rootstock.io/",
@@ -47,15 +47,15 @@ const CONFIGS: Record<number, Configs> = {
     parallelChunks: 3,
     explorer: "https://explorer.testnet.citrea.xyz/",
   },
-  [POLYGON]: {
-    rpcUrl: "https://polygon-amoy.drpc.org",
-    USDC: "0x1Ba59a311Fb42D475dBC55C9bc780e3883E25A53",
+  [POLYGON_MAINNET]: {
+    rpcUrl: "https://polygon-rpc.com",
+    USDC: "0x1Ba59a311Fb42D475dBC55C9bc780e3883E25A53", // Mock USDC
     RangeBetManager: "0x35c3C4FA2F14544dA688e41118edAc953cc48cDa",
     multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
-    createdBlocknum: 20081162,
+    createdBlocknum: 69936222,
     chunkSize: 20,
     parallelChunks: 3,
-    explorer: "https://amoy.polygonscan.com/",
+    explorer: "https://polygonscan.com/",
   },
 } as const;
 
