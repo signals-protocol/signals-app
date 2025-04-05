@@ -1,11 +1,16 @@
-import { findX } from "../utils/findX";
+import CONFIGS, { binIndexToBin } from "./configs";
+import { BetManager__factory } from "../typechain";
+import { JsonRpcProvider } from "ethers";
 
 export const calculateBinTicket = async (
-  allBins: bigint[],
-  targetBin: number,
+  chainId: number,
+  marketId: number,
+  binIndex: number,
   amount: bigint
 ) => {
-  const sum = allBins.reduce((acc, bin) => acc + bin, 0n);
-  const ticket = findX(amount, allBins[targetBin], sum);
-  return ticket;
+  const config = CONFIGS[chainId];
+  const provider = new JsonRpcProvider(config.rpcUrl);
+  const bm = BetManager__factory.connect(config.RangeBetManager, provider);
+  const bin = binIndexToBin(binIndex);
+  return bm.calculateXForBin(marketId, bin, amount);
 };

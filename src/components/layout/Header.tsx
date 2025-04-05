@@ -12,10 +12,10 @@ export default function Header() {
     await switchNetwork(ROOTSTOCK);
     await getUSDC(ROOTSTOCK, signer);
   };
-  
+
   return (
     <header className="bg-white shadow-sm">
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <nav className="max-w-7xl px-6 mx-auto">
         <div className="flex justify-between h-16 items-center">
           <div className="flex items-center">
             <Link to="/" className="text-xl font-bold text-gray-800">

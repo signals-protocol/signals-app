@@ -1,7 +1,7 @@
-import { formatEther, Signer } from "ethers";
+import { Signer } from "ethers";
 import { BetManager__factory } from "../typechain";
-import CONFIGS from "./configs";
-import { TICK_SPACING, TARGET_BIN_START } from "./getHeatmapData";
+import CONFIGS, { binIndexToBin, GLOBAL_CONFIG } from "./configs";
+
 async function predictPrice(
   chainId: number,
   signer: Signer,
@@ -12,7 +12,7 @@ async function predictPrice(
 ) {
   const config = CONFIGS[chainId];
   const bm = BetManager__factory.connect(config.RangeBetManager, signer);
-  const bin = binIndex * TICK_SPACING + TARGET_BIN_START;
+  const bin = binIndexToBin(binIndex)
   const tx = await bm.buyTokens(marketId, [bin], [ticket], amount);
   const receipt = await tx.wait();
   return receipt;

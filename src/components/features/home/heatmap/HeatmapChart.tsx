@@ -1,6 +1,8 @@
-import { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
+import { useEffect, useRef, useState } from "react";
 import { formatEther } from "ethers";
+import { colorScale } from "./colorScale";
+import { CHART_CONFIG } from "core/configs";
 
 export interface HeatmapDatum {
   date: Date | string;
@@ -11,7 +13,6 @@ export type HeatmapChartProps = {
   data: HeatmapDatum[];
   priceBins: number[];
   width?: number;
-  height?: number;
   margin?: { top: number; right: number; bottom: number; left: number };
   onBinClick: (marketId: number, binId: number) => void;
 };
@@ -19,7 +20,7 @@ export type HeatmapChartProps = {
 export default function HeatmapChart({
   data,
   priceBins,
-  margin = { top: 20, right: 20, bottom: 40, left: 60 },
+  margin = { top: 0, right: 20, bottom: 40, left: 60 },
   onBinClick,
 }: HeatmapChartProps) {
   const containerRef = useRef<SVGSVGElement>(null);
@@ -48,8 +49,6 @@ export default function HeatmapChart({
     return () => resizeObserver.disconnect();
   }, []);
 
-  const height = 500;
-
   // x축 scale을 containerWidth 기준으로 수정
   const xScale = d3
     .scaleTime()
@@ -60,7 +59,7 @@ export default function HeatmapChart({
   const yScale = d3
     .scaleBand()
     .domain(priceBins.map(String))
-    .range([height - margin.bottom, margin.top]);
+    .range([CHART_CONFIG.height - margin.bottom, margin.top]);
 
   const xAxisRef = useRef<SVGGElement>(null);
   const yAxisRef = useRef<SVGGElement>(null);
@@ -128,18 +127,42 @@ export default function HeatmapChart({
     d.map((value) => (maxValue > 0 ? value / maxValue : 0))
   );
 
+  // 각 날짜별 최대 티켓 값을 가진 빈의 인덱스 계산
+  const maxTicketIndices = data.map((d) => {
+    const maxIndex = d.values.reduce(
+      (maxIdx, value, idx, arr) => 
+        +formatEther(value) > +formatEther(arr[maxIdx]) ? idx : maxIdx, 
+      0
+    );
+    return maxIndex;
+  });
+
+  // 라인 차트를 위한 데이터 포인트 생성
+  const lineData = data.map((d, i) => ({
+    date: new Date(d.date),
+    price: parseFloat(priceBins[maxTicketIndices[i]].toString()),
+    value: +formatEther(d.values[maxTicketIndices[i]]),
+  }));
+
+  // 라인 생성기
+  const line = d3
+    .line<{ date: Date; price: number }>()
+    .x((d) => xScale(d.date) + rectWidth / 2)
+    .y((d) => yScale(d.price.toString())! + rectHeight / 2)
+    .curve(d3.curveMonotoneX);
+
   return (
     <div className="relative flex-1">
       <svg
         ref={containerRef}
         width="100%"
-        height={height}
-        viewBox={`0 0 ${containerWidth} ${height}`}
+        height={CHART_CONFIG.height}
+        viewBox={`0 0 ${containerWidth} ${CHART_CONFIG.height}`}
         preserveAspectRatio="xMidYMid meet"
       >
         <g
           ref={xAxisRef}
-          transform={`translate(0,${height - margin.bottom})`}
+          transform={`translate(0,${CHART_CONFIG.height - margin.bottom})`}
         />
         <g ref={yAxisRef} transform={`translate(${margin.left},0)`} />
 
@@ -159,8 +182,7 @@ export default function HeatmapChart({
               y={yScale(priceBins[j].toString())! + cellPadding / 2}
               width={rectWidth}
               height={rectHeight}
-              // fill={colorScale(value)}
-              className={`group ${colorScale(value)}`}
+              className={colorScale(value)}
               onMouseEnter={() => {
                 setHoveredBin({
                   i,
@@ -174,6 +196,27 @@ export default function HeatmapChart({
             />
           ));
         })}
+
+        {/* 최대 티켓 값 라인 차트 */}
+        <path
+          d={line(lineData) || ""}
+          fill="none"
+          stroke="#F7931A"
+          strokeWidth={2}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+
+        {/* 라인 차트 데이터 포인트 */}
+        {lineData.map((d, i) => (
+          <circle
+            key={`point-${i}`}
+            cx={xScale(d.date) + rectWidth / 2}
+            cy={yScale(d.price.toString())! + rectHeight / 2}
+            r={3}
+            className="fill-bitcoin"
+          />
+        ))}
       </svg>
       {hoveredBin && (
         <div
@@ -198,18 +241,4 @@ export default function HeatmapChart({
       )}
     </div>
   );
-}
-
-function colorScale(value: number) {
-  if (value < 0.001) return "fill-[#fafafa]";
-  if (value < 0.005) return "fill-primary-50";
-  if (value < 0.01) return "fill-primary-100";
-  if (value < 0.04) return "fill-primary-200";
-  if (value < 0.1) return "fill-primary-300";
-  if (value < 0.2) return "fill-primary-400";
-  if (value < 0.4) return "fill-primary-500";
-  if (value < 0.6) return "fill-primary-600";
-  if (value < 0.8) return "fill-primary-700";
-  if (value < 0.9) return "fill-primary-800";
-  return "fill-primary-950";
 }

@@ -5,10 +5,11 @@ import { HeatmapDatum } from "../heatmap/HeatmapChart";
 import { parseEther } from "ethers";
 import { useAppKitAccount } from "@reown/appkit/react";
 import { getAllowance, getBalance } from "core/token";
+import { GLOBAL_CONFIG } from "core/configs";
 import getHeatmapData from "core/getHeatmapData";
 
 const createPriceBins = (startPrice: number, length: number) => {
-  return Array.from({ length }, (_, i) => startPrice + i * 500);
+  return Array.from({ length: length + 1 }, (_, i) => startPrice + i * 500);
 };
 
 export const usePrediction = (
@@ -18,6 +19,8 @@ export const usePrediction = (
   binCount: number
 ) => {
   const { address } = useAppKitAccount();
+  const [isHeatmap, setIsHeatmap] = useState(true);
+
   // Date
   const [selectedMarketId, setSelectedMarketId] = useState<number>(6);
   // Price Bin
@@ -32,24 +35,10 @@ export const usePrediction = (
   const [balance, setBalance] = useState<bigint>(0n);
   const [heatmapData, setHeatmapData] = useState<HeatmapDatum[]>();
   const [allowance, setAllowance] = useState<bigint>(0n);
+  const [isMapLoading, setIsMapLoading] = useState<boolean>(false);
+  const [isTicketLoading, setIsTicketLoading] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (currentBinId !== null && heatmapData) {
-      calculateBinTicket(
-        heatmapData[selectedMarketId].values,
-        currentBinId,
-        parseEther(amount)
-      ).then(setTickets);
-    }
-  }, [selectedMarketId, currentBinId, amount, heatmapData]);
-
-  useEffect(() => {
-    getHeatmapData(chainId, 31, startDate, binCount).then((data) => {
-      setHeatmapData(data);
-    });
-  }, []);
-
-  useEffect(() => {
+  const refreshBalance = async () => {
     if (address) {
       getAllowance(chainId, address).then(setAllowance);
       getBalance(chainId, address).then(setBalance);
@@ -57,6 +46,42 @@ export const usePrediction = (
       setAllowance(0n);
       setBalance(0n);
     }
+  };
+  const refreshMap = async () => {
+    setIsMapLoading(true);
+    refreshBalance();
+    return getHeatmapData(
+      chainId,
+      GLOBAL_CONFIG.dateCount,
+      startDate,
+      binCount
+    ).then((data) => {
+      setHeatmapData(data);
+      setIsMapLoading(false);
+    });
+  };
+
+  useEffect(() => {
+    if (currentBinId !== null && heatmapData) {
+      setIsTicketLoading(true);
+      calculateBinTicket(
+        chainId,
+        selectedMarketId,
+        currentBinId,
+        parseEther(amount || "0")
+      ).then((res) => {
+        setTickets(res);
+        setIsTicketLoading(false);
+      });
+    }
+  }, [selectedMarketId, currentBinId, amount, heatmapData]);
+
+  useEffect(() => {
+    refreshMap();
+  }, []);
+
+  useEffect(() => {
+    refreshBalance();
   }, [address]);
 
   const currBin =
@@ -67,6 +92,7 @@ export const usePrediction = (
   const onBinClick = (marketId: number, binId: number) => {
     setCurrentBinId(binId);
     setSelectedMarketId(marketId);
+    setIsHeatmap(false);
   };
 
   return {
@@ -78,6 +104,9 @@ export const usePrediction = (
     selectedMarketId,
     setSelectedMarketId,
     priceBins,
+    binIndices: Array(binCount)
+      .fill(0)
+      .map((_, i) => i),
     currentBinId,
     setCurrentBinId,
     currBin,
@@ -88,5 +117,10 @@ export const usePrediction = (
     heatmapData,
     shouldApprove: allowance < parseEther(amount || "0"),
     balance,
+    isTicketLoading,
+    isMapLoading,
+    refreshMap,
+    isHeatmap,
+    setIsHeatmap,
   };
 };

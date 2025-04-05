@@ -5,6 +5,8 @@ export default {
   theme: {
     extend: {
       colors: {
+        bitcoin: "#F7931A",
+        positive: "#00BF40",
         surface: {
           DEFAULT: "#FFFFFF",
           container: "#FAFAFA",

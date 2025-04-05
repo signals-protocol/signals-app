@@ -372,6 +372,35 @@ const _abi = [
     name: "TokensBought",
     type: "event",
   },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "marketId",
+        type: "uint256",
+      },
+      {
+        internalType: "int256",
+        name: "binIndex",
+        type: "int256",
+      },
+      {
+        internalType: "uint256",
+        name: "cost",
+        type: "uint256",
+      },
+    ],
+    name: "calculateXForBin",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
 ] as const;
 
 export class BetManager__factory {

@@ -7,16 +7,14 @@ import {
 import CONFIGS from "./configs";
 import { ethers } from "ethers";
 import { addDays } from "date-fns";
-
-export const TARGET_BIN_START = 0;
-export const TICK_SPACING = 60;
+import { GLOBAL_CONFIG } from "./configs";
 
 function getTargetBins(binCount: number) {
   const targetBins = [];
-  let bin = TARGET_BIN_START;
+  let bin = GLOBAL_CONFIG.targetBinStart;
   for (let i = 0; i < binCount; i++) {
     targetBins.push(bin);
-    bin += TICK_SPACING;
+    bin += GLOBAL_CONFIG.tickSpacing;
   }
   return targetBins;
 }

@@ -5,6 +5,8 @@ import { parseEther } from "ethers";
 import { useNavigate } from "react-router-dom";
 import { useGetSigner } from "utils/useGetSigner";
 import { useEffect, useState } from "react";
+import { useAppKitAccount } from "@reown/appkit/react";
+import { useAppKit } from "@reown/appkit/react";
 interface UseActionProps {
   chainId: number;
   currentBinId: number | null;
@@ -12,9 +14,11 @@ interface UseActionProps {
   amount: string;
   tickets: bigint;
   shouldApprove: boolean;
+  refreshMap: () => Promise<void>;
 }
 
 type ActionState =
+  | "connect-account"
   | "need-approve"
   | "approve-loading"
   | "can-predict"
@@ -28,8 +32,11 @@ export default function useAction({
   amount,
   tickets,
   shouldApprove,
+  refreshMap,
 }: UseActionProps) {
   const nav = useNavigate();
+  const { address } = useAppKitAccount();
+  const { open } = useAppKit();
   const getSigner = useGetSigner();
 
   const approve = async () => {
@@ -59,6 +66,7 @@ export default function useAction({
         parseEther(amount)
       );
       setState("done");
+      await refreshMap();
     } catch (error) {
       console.error(error);
       setState("can-predict");
@@ -72,11 +80,17 @@ export default function useAction({
 
   const [state, setState] = useState<ActionState>("need-approve");
   useEffect(() => {
-    setState(shouldApprove ? "need-approve" : "can-predict");
-  }, [shouldApprove]);
+    if (!address) {
+      setState("connect-account");
+    } else {
+      setState(shouldApprove ? "need-approve" : "can-predict");
+    }
+  }, [address, shouldApprove]);
 
   const onClick = () => {
-    if (state === "need-approve") {
+    if (state === "connect-account") {
+      open();
+    } else if (state === "need-approve") {
       approve();
     } else if (state === "can-predict") {
       predict();
@@ -88,5 +102,19 @@ export default function useAction({
   return {
     onClick,
     state,
+    msg:
+      state === "connect-account"
+        ? "Connect Wallet"
+        : state === "need-approve"
+        ? "Approve USDC"
+        : state === "approve-loading"
+        ? "Approving"
+        : state === "can-predict"
+        ? "Predict"
+        : state === "predict-loading"
+        ? "Placing Prediction"
+        : state === "done"
+        ? "Prediction Confirmed"
+        : "",
   };
 }

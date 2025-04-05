@@ -4,10 +4,9 @@ import { Tabs, TabType } from "./Tabs";
 import { LivePrediction, EndedPrediction, PredictionSummary, PredictionLog } from "./interfaces";
 import { getPredictionHistory } from "core/getPredictionHistory";
 import { useAppKitAccount } from "@reown/appkit/react";
-import { ROOTSTOCK } from "core/configs";
 import { EventLog } from "ethers";
+import { GLOBAL_CONFIG } from "core/configs";
 
-const CHAIN_ID = ROOTSTOCK;
 const PredictionHistory= () => {
   const {address} = useAppKitAccount();
   const [items, setItems] = useState<PredictionLog[]>([]);
@@ -25,9 +24,8 @@ const PredictionHistory= () => {
     };
 
     setItems([]);
-    getPredictionHistory(CHAIN_ID, address, addItems);
+    getPredictionHistory(GLOBAL_CONFIG.chainId, address, addItems);
   }, [address]);
-  console.log(items);
 
   const [activeTab, setActiveTab] = useState<TabType>("Live");
 
