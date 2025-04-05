@@ -13,7 +13,7 @@ const projectId = import.meta.env.VITE_PROJECT_ID;
 export const supportedChains = [
   // polygonAmoy,
   // flowTestnet,
-  // citreaTestnet,
+  citreaTestnet,
   rootstockTestnet,
 ] as [AppKitNetwork, ...AppKitNetwork[]];
 const metadata = {

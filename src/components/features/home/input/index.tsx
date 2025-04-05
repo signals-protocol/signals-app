@@ -1,7 +1,4 @@
 import "react-datepicker/dist/react-datepicker.css";
-import DatePicker from "react-datepicker";
-import formatDate from "./formatDate";
-import { useRef } from "react";
 import { usePrediction } from "./usePrediction";
 import { formatUnits, parseEther } from "ethers";
 import useAction from "./useAction";

@@ -9,9 +9,10 @@ interface Configs {
 }
 
 export const ROOTSTOCK = 31;
+export const CITREA = 5115;
 
 export const GLOBAL_CONFIG = {
-  chainId: ROOTSTOCK,
+  chainId: CITREA,
   dateCount: 31,
   startPrice: 75000,
   binCount: 40,
@@ -29,6 +30,15 @@ const CONFIGS: Record<number, Configs> = {
     RangeBetManager: "0x9fDEb59d52b49F95D244Be8f64e307D500b11A3a",
     multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
     createdBlocknum: 6241138,
+    chunkSize: 11,
+    parallelChunks: 3,
+  },
+  [CITREA]: {
+    rpcUrl: "https://rpc.testnet.citrea.xyz",
+    USDC: "0x73908E35F9b5747f6183111cA417462E8e39c09B",
+    RangeBetManager: "0x70f4Ca15671FEF847f93a4A554E8758bd1c8240F",
+    multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
+    createdBlocknum: 8529016,
     chunkSize: 11,
     parallelChunks: 3,
   },

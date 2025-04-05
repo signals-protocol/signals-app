@@ -39,13 +39,14 @@ export const InputAmount = ({
           <span className="text-surface-on-var font-medium">Amount</span>
           <p className="text-surface-on-var text-xs mt-1">Your confidence 🙌</p>
         </div>
-        <div className="inline-flex items-center">
+        <div className="inline-flex items-center text-xl font-bold ">
           <input
             value={amount}
             onChange={onChangeValue}
-            className="text-xl font-bold outline-none text-right"
+            className="outline-none text-right"
             placeholder="$0"
           />
+          <p className="ml-1">USDC</p>
         </div>
       </div>
 
