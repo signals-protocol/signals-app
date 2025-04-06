@@ -94,9 +94,9 @@ export default function Header() {
               )}
             </div>
 
-            <a href="https://citrea.xyz/faucet" className="text-gray-800">
+            {/* <a href="https://citrea.xyz/faucet" className="text-gray-800">
               Faucet
-            </a>
+            </a> */}
 
             {address ? <appkit-account-button /> : <appkit-connect-button />}
 
