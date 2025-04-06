@@ -38,9 +38,7 @@ export default function Header() {
             <Link to="/profile" className="text-gray-800">
               History
             </Link>
-            <a href="https://citrea.xyz/faucet" className="text-gray-800">
-              Faucet
-            </a>
+
             <div className="relative">
               <button
                 className="text-gray-800 hover:text-primary cursor-pointer"
@@ -51,16 +49,18 @@ export default function Header() {
 
               {/* QR 코드 팝오버 */}
               {showQRPopover && (
-                <div className="fixed right-8 top-8 bg-white rounded-2xl shadow-lg p-4 z-50 w-[280px]">
-                  <div className="flex justify-between items-center mb-3">
-                    <div />
+                <div className="fixed right-8 top-8 bg-white rounded-2xl overflow-hidden shadow-lg z-50 w-[280px]">
+                  <div className="absolute top-2 right-2">
                     <button
-                      onClick={() => setShowQRPopover(false)}
-                      className="text-gray-500 hover:text-gray-700"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowQRPopover(false);
+                      }}
+                      className="text-gray-500 hover:text-gray-700 bg-white rounded-full p-1"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="h-6 w-6"
+                        className="h-5 w-5"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -74,35 +74,29 @@ export default function Header() {
                       </svg>
                     </button>
                   </div>
-                  <div className="flex flex-col gap-3 pb-2">
-                    <div className="flex flex-col items-center">
-                      <div className="bg-gray-100 w-full aspect-square flex items-center justify-center mb-1">
-                        <img
-                          src="/images/website-qr.png"
-                          alt="QR Code 1"
-                          className="w-full h-full object-contain"
-                        />
-                      </div>
-                      <p className="text-lg font-bold text-center">
-                        Try it out!
-                      </p>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <div className="bg-gray-100 w-full aspect-square flex items-center justify-center mb-1">
-                        <img
-                          src="/images/discord-qr.png"
-                          alt="QR Code 1"
-                          className="w-full h-full object-contain"
-                        />
-                      </div>
-                      <p className="text-lg font-bold text-center">
-                        Join Discord
-                      </p>
-                    </div>
+
+                  <div
+                    onClick={() =>
+                      window.open(
+                        "https://discord.com/invite/sWgxD22FdQ",
+                        "_blank"
+                      )
+                    }
+                    className="cursor-pointer"
+                  >
+                    <img
+                      src="/images/qrs.png"
+                      alt="qrcodes"
+                      className="w-full h-full object-contain -mr-4"
+                    />
                   </div>
                 </div>
               )}
             </div>
+
+            <a href="https://citrea.xyz/faucet" className="text-gray-800">
+              Faucet
+            </a>
 
             {address ? <appkit-account-button /> : <appkit-connect-button />}
 
