@@ -51,7 +51,7 @@ export default function Header() {
 
               {/* QR 코드 팝오버 */}
               {showQRPopover && (
-                <div className="fixed right-8 top-8 bg-white rounded-lg shadow-lg p-4 z-50 w-[600px]">
+                <div className="fixed right-8 top-8 bg-white rounded-2xl shadow-lg p-4 z-50 w-[280px]">
                   <div className="flex justify-between items-center mb-3">
                     <div />
                     <button
@@ -74,7 +74,7 @@ export default function Header() {
                       </svg>
                     </button>
                   </div>
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="flex flex-col gap-3 pb-2">
                     <div className="flex flex-col items-center">
                       <div className="bg-gray-100 w-full aspect-square flex items-center justify-center mb-1">
                         <img
@@ -83,7 +83,7 @@ export default function Header() {
                           className="w-full h-full object-contain"
                         />
                       </div>
-                      <p className="text-md font-medium text-center">
+                      <p className="text-lg font-bold text-center">
                         Try it out!
                       </p>
                     </div>
@@ -95,7 +95,7 @@ export default function Header() {
                           className="w-full h-full object-contain"
                         />
                       </div>
-                      <p className="text-md font-medium text-center">
+                      <p className="text-lg font-bold text-center">
                         Join Discord
                       </p>
                     </div>
