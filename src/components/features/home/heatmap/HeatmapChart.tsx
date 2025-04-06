@@ -296,7 +296,7 @@ export default function HeatmapChart({
           <div className="flex justify-between">
             <p className="text-[10px] text-surface-on-var">Price</p>
             <p className="text-xs font-bold ">
-              {dollarFormatter(hoveredBin.price)}
+              {dollarFormatter(hoveredBin.price)}-{dollarFormatter(+hoveredBin.price+500)}
             </p>
           </div>
 

@@ -14,7 +14,7 @@ export const ROOTSTOCK = 31;
 export const CITREA = 5115;
 
 export const GLOBAL_CONFIG = {
-  chainId: POLYGON_MAINNET,
+  chainId: CITREA,
   startDate: new Date("2025-03-31"),
   dateCount: 31,
   startPrice: 75000,
@@ -30,9 +30,9 @@ const CONFIGS: Record<number, Configs> = {
   [ROOTSTOCK]: {
     rpcUrl: "https://rpc.testnet.rootstock.io/ftZ3SGjLVuC4p9Bl70AF0EdUBSz3Ca-T",
     USDC: "0x4f19f78Ab075f033004A5f42bCFdE294CbeE2AEF",
-    RangeBetManager: "0x35c3C4FA2F14544dA688e41118edAc953cc48cDa",
+    RangeBetManager: "0x37714c231bd5D87f7655DEFe8116705CA280438d",
     multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
-    createdBlocknum: 69936222,
+    createdBlocknum: 6242906,
     chunkSize: 11,
     parallelChunks: 3,
     explorer: "https://explorer.testnet.rootstock.io/",
@@ -48,7 +48,8 @@ const CONFIGS: Record<number, Configs> = {
     explorer: "https://explorer.testnet.citrea.xyz/",
   },
   [POLYGON_MAINNET]: {
-    rpcUrl: "https://polygon-rpc.com",
+    rpcUrl:
+      "https://polygon-mainnet.g.allthatnode.com/full/evm/92c0459bd6394890a091bead6672bde8",
     USDC: "0x1Ba59a311Fb42D475dBC55C9bc780e3883E25A53", // Mock USDC
     RangeBetManager: "0x35c3C4FA2F14544dA688e41118edAc953cc48cDa",
     multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
