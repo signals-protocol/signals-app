@@ -14,7 +14,7 @@ export const ROOTSTOCK = 31;
 export const CITREA = 5115;
 
 export const GLOBAL_CONFIG = {
-  chainId: CITREA,
+  chainId: POLYGON_MAINNET,
   startDate: new Date("2025-03-31"),
   dateCount: 31,
   startPrice: 75000,

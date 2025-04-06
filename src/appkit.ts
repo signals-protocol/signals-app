@@ -3,19 +3,16 @@ import { EthersAdapter } from "@reown/appkit-adapter-ethers";
 import {
   AppKitNetwork,
   citreaTestnet,
-  flowTestnet,
-  polygonAmoy,
+  polygon,
   rootstockTestnet,
 } from "@reown/appkit/networks";
 
 const projectId = import.meta.env.VITE_PROJECT_ID;
 
-export const supportedChains = [
-  // polygonAmoy,
-  // flowTestnet,
-  citreaTestnet,
-  rootstockTestnet,
-] as [AppKitNetwork, ...AppKitNetwork[]];
+export const supportedChains = [polygon, citreaTestnet, rootstockTestnet] as [
+  AppKitNetwork,
+  ...AppKitNetwork[]
+];
 const metadata = {
   name: "ethglobal-taipei",
   description: "AppKit Example",
